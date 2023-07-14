@@ -1,34 +1,65 @@
-import { InputAdornment, Input, Grid, MuiThemeProvider, IconButton, Icon, TextField, Button, TableHead, TableCell, TableRow, Checkbox, TablePagination } from "@material-ui/core";
+import {
+  InputAdornment,
+  Input,
+  Grid,
+  MuiThemeProvider,
+  IconButton,
+  Icon,
+  TextField,
+  Button,
+  TableHead,
+  TableCell,
+  TableRow,
+  Checkbox,
+  TablePagination,
+} from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import moment from "moment";
-import MaterialTable, { MTableToolbar, Chip, MTableBody, MTableHeader } from 'material-table';
-import { useTranslation, withTranslation, Trans } from 'react-i18next';
-import { deleteItem, saveItem, getItemById, searchByPage } from "./PresonnelService";
+import MaterialTable, {
+  MTableToolbar,
+  Chip,
+  MTableBody,
+  MTableHeader,
+} from "material-table";
+import { useTranslation, withTranslation, Trans } from "react-i18next";
+import {
+  deleteItem,
+  saveItem,
+  getItemById,
+  searchByPage,
+  getAll,
+} from "./PersonnelService";
 import PersonnelEditorDialog from "./PersonnelEditorDialog";
 import { Breadcrumb, ConfirmationDialog } from "egret";
 import { Link } from "react-router-dom";
-import SearchIcon from '@material-ui/icons/Search';
-import { Helmet } from 'react-helmet';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import SearchIcon from "@material-ui/icons/Search";
+import { Helmet } from "react-helmet";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 toast.configure({
   autoClose: 1000,
   draggable: false,
-  limit: 3
+  limit: 3,
 });
 function MaterialButton(props) {
   const { t, i18n } = useTranslation();
   const item = props.item;
-  return <div>
-    <IconButton size="small" onClick={() => props.onSelect(item, 0)}>
-      <Icon fontSize="small" color="primary">edit</Icon>
-    </IconButton>
-    <IconButton size="small" onClick={() => props.onSelect(item, 1)}>
-      <Icon fontSize="small" color="error">delete</Icon>
-    </IconButton>
-  </div>;
+  return (
+    <div>
+      <IconButton size="small" onClick={() => props.onSelect(item, 0)}>
+        <Icon fontSize="small" color="primary">
+          edit
+        </Icon>
+      </IconButton>
+      <IconButton size="small" onClick={() => props.onSelect(item, 1)}>
+        <Icon fontSize="small" color="error">
+          delete
+        </Icon>
+      </IconButton>
+    </div>
+  );
 }
 class Personnel extends React.Component {
   state = {
@@ -40,8 +71,8 @@ class Personnel extends React.Component {
     shouldOpenEditorDialog: false,
     shouldOpenConfirmationDialog: false,
     shouldOpenConfirmationDeleteAllDialog: false,
-    keyword: ''
-  }
+    keyword: "",
+  };
   constructor(props) {
     super(props);
     this.handleTextChange = this.handleTextChange.bind(this);
@@ -51,8 +82,8 @@ class Personnel extends React.Component {
     this.setState({ keyword: event.target.value });
   }
 
-  handleKeyDownEnterSearch = e => {
-    if (e.key === 'Enter') {
+  handleKeyDownEnterSearch = (e) => {
+    if (e.key === "Enter") {
       this.setPage(0);
     }
   };
@@ -72,7 +103,10 @@ class Personnel extends React.Component {
       searchObject.pageIndex = this.state.page + 1;
       searchObject.pageSize = this.state.rowsPerPage;
       searchByPage(searchObject).then(({ data }) => {
-        this.setState({ itemList: [...data.content], totalElements: data.totalElements })
+        this.setState({
+          itemList: [...data.content],
+          totalElements: data.totalElements,
+        });
       });
     });
   }
@@ -82,22 +116,26 @@ class Personnel extends React.Component {
     searchObject.text = this.state.keyword.trim();
     searchObject.pageIndex = this.state.page + 1;
     searchObject.pageSize = this.state.rowsPerPage;
-    searchByPage(searchObject, this.state.page, this.state.rowsPerPage).then(({ data }) => {
-      this.setState({ itemList: [...data.content], totalElements: data.totalElements })
-    }
+    searchByPage(searchObject, this.state.page, this.state.rowsPerPage).then(
+      ({ data }) => {
+        this.setState({
+          itemList: [...data.content],
+          totalElements: data.totalElements,
+        });
+      }
     );
   };
 
-  setPage = page => {
+  setPage = (page) => {
     this.setState({ page }, function () {
       this.updatePageData();
-    })
+    });
   };
 
-  setRowsPerPage = event => {
+  setRowsPerPage = (event) => {
     this.setState({ rowsPerPage: event.target.value, page: 0 }, function () {
       this.updatePageData();
-    })
+    });
   };
 
   handleChangePage = (event, newPage) => {
@@ -107,15 +145,15 @@ class Personnel extends React.Component {
   handleOKEditClose = () => {
     this.setState({
       shouldOpenEditorDialog: false,
-      shouldOpenConfirmationDialog: false
+      shouldOpenConfirmationDialog: false,
     });
     this.setPage(0);
   };
 
-  handleDelete = id => {
+  handleDelete = (id) => {
     this.setState({
       id,
-      shouldOpenConfirmationDialog: true
+      shouldOpenConfirmationDialog: true,
     });
   };
 
@@ -123,69 +161,76 @@ class Personnel extends React.Component {
     this.setState({
       shouldOpenEditorDialog: false,
       shouldOpenConfirmationDialog: false,
-      shouldOpenConfirmationDeleteAllDialog: false
+      shouldOpenConfirmationDeleteAllDialog: false,
     });
-    this.setPage(0)
+    this.setPage(0);
   };
 
   handleOKEditClose = () => {
     this.setState({
       shouldOpenEditorDialog: false,
       shouldOpenConfirmationDialog: false,
-      shouldOpenConfirmationDeleteAllDialog: false
+      shouldOpenConfirmationDeleteAllDialog: false,
     });
     this.setPage(0);
   };
 
-  handleDelete = id => {
+  handleDelete = (id) => {
     this.setState({
       id,
-      shouldOpenConfirmationDialog: true
+      shouldOpenConfirmationDialog: true,
     });
   };
 
   handleConfirmationResponse = () => {
     let { t } = this.props;
-    deleteItem(this.state.id).then(() => {
-      this.updatePageData();
-      this.handleDialogClose();
-      toast.success(t("deleteSuccess"));
-    }).catch(() => {
-      toast.warning(t('error'));
-      this.handleDialogClose();
+    deleteItem(this.state.id)
+      .then(() => {
+        this.updatePageData();
+        this.handleDialogClose();
+        toast.success(t("deleteSuccess"));
+      })
+      .catch(() => {
+        toast.warning(t("error"));
+        this.handleDialogClose();
+      });
+  };
+
+  handleEditItem = (item) => {
+    this.setState({
+      item: item,
+      shouldOpenEditorDialog: true,
     });
   };
 
-  handleEditItem = item => {
-    this.setState({
-      item: item,
-      shouldOpenEditorDialog: true
-    });
-  };
+  handleGetData = () => {};
 
   componentDidMount() {
     this.updatePageData();
   }
   async handleDeleteList(list) {
     let { t } = this.props;
-    let demSuccess = 0, demError = 0;
+    let demSuccess = 0,
+      demError = 0;
     for (var i = 0; i < list.length; i++) {
-      await deleteItem(list[i].id).then((res) => {
-        demSuccess++;
-        // toast.success(t("deleteSuccess") + " " + list[i].code);
-        this.updatePageData();
-        this.handleDialogClose();
-      }).catch((err) => {
-        demError++;
-        // toast.warning(t('error'));
-        this.handleDialogClose();
-      });
+      await deleteItem(list[i].id)
+        .then((res) => {
+          demSuccess++;
+          // toast.success(t("deleteSuccess") + " " + list[i].code);
+          this.updatePageData();
+          this.handleDialogClose();
+        })
+        .catch((err) => {
+          demError++;
+          // toast.warning(t('error'));
+          this.handleDialogClose();
+        });
     }
     if (demSuccess != 0) {
       toast.success(t("deleteSuccess") + " " + demSuccess);
     }
     if (demError != 0) {
-      toast.warning(t('error') + " " + demError);
+      toast.warning(t("error") + " " + demError);
     }
   }
 
@@ -195,10 +240,9 @@ class Personnel extends React.Component {
       this.handleDeleteList(this.data).then(() => {
         this.updatePageData();
         this.handleDialogClose();
-      }
-      );
+      });
     } else {
-      toast.warning(t('general.select_data'));
+      toast.warning(t("general.select_data"));
       this.handleDialogClose();
     }
   };
@@ -215,7 +259,7 @@ class Personnel extends React.Component {
       item,
       shouldOpenConfirmationDialog,
       shouldOpenEditorDialog,
-      shouldOpenConfirmationDeleteAllDialog
+      shouldOpenConfirmationDeleteAllDialog,
     } = this.state;
 
     let columns = [
@@ -235,29 +279,35 @@ class Personnel extends React.Component {
           paddingRight: "0px",
           textAlign: "left",
         },
-        cellStyle: { whiteSpace: 'nowrap' },
-        render: rowData => <MaterialButton item={rowData}
-          onSelect={(rowData, method) => {
-            if (method === 0) {
-              getItemById(rowData.id).then(({ data }) => {
-                if (data.parent === null) {
-                  data.parent = {};
-                }
-                this.setState({
-                  item: data,
-                  shouldOpenEditorDialog: true
+        cellStyle: { whiteSpace: "nowrap" },
+        render: (rowData) => (
+          <MaterialButton
+            item={rowData}
+            onSelect={(rowData, method) => {
+              if (method === 0) {
+                getItemById(rowData.id).then(({ data }) => {
+                  if (data.parent === null) {
+                    data.parent = {};
+                  }
+                  this.setState({
+                    item: data,
+                    shouldOpenEditorDialog: true,
+                  });
                 });
-              })
-            } else if (method === 1) {
-              this.handleDelete(rowData.id);
-            } else {
-              alert('Call Selected Here:' + rowData.id);
-            }
-          }}
-        />
+              } else if (method === 1) {
+                this.handleDelete(rowData.id);
+              } else {
+                alert("Call Selected Here:" + rowData.id);
+              }
+            }}
+          />
+        ),
       },
       {
-        title: t("general.displayName"), field: "displayName", align: "left", width: "150",
+        title: t("staff.displayName"),
+        field: "displayName",
+        align: "left",
+        width: "150",
         headerStyle: {
           minWidth: "150px",
           paddingLeft: "10px",
@@ -271,7 +321,10 @@ class Personnel extends React.Component {
         },
       },
       {
-        title: t("general.email"), field: "email", align: "left", width: "250",
+        title: t("staff.email"),
+        field: "email",
+        align: "left",
+        width: "250",
 
         headerStyle: {
           minWidth: "150px",
@@ -286,7 +339,10 @@ class Personnel extends React.Component {
         },
       },
       {
-        title: t("general.phoneNumber"), field: "phoneNumber", align: "left", width: "150",
+        title: t("staff.phoneNumber"),
+        field: "phoneNumber",
+        align: "left",
+        width: "150",
         headerStyle: {
           minWidth: "150px",
           paddingLeft: "10px",
@@ -300,7 +356,10 @@ class Personnel extends React.Component {
         },
       },
       {
-        title: t("general.birthDate"), field: "", align: "left", width: "150",
+        title: t("staff.birthDate"),
+        field: "",
+        align: "left",
+        width: "150",
         headerStyle: {
           minWidth: "150px",
           paddingLeft: "10px",
@@ -312,19 +371,28 @@ class Personnel extends React.Component {
           paddingRight: "0px",
           textAlign: "left",
         },
-        render: rowData => rowData.birthDate ? (
-          <span>{moment(rowData.birthDate).format("DD/MM/YYYY")} </span>
-        ) : ("")
+        render: (rowData) =>
+          rowData.birthDate ? (
+            <span>{moment(rowData.birthDate).format("DD/MM/YYYY")} </span>
+          ) : (
+            ""
+          ),
       },
-
     ];
     return (
       <div className="m-sm-30">
-        <Helmet>
-          <title>{t("personnel.title")} | {t("web_site")}</title>
-        </Helmet>
+        {/* <Helmet>
+          <title>
+            {t("personnel.title")} | {t("web_site")}
+          </title>
+        </Helmet> */}
         <div className="mb-sm-30">
-          <Breadcrumb routeSegments={[{ name: t("category"), path: "/directory/apartment" }, { name: t("personnel.title") }]} />
+          <Breadcrumb
+            routeSegments={[
+              { name: t("Dashboard.manage"), path: "/directory/apartment" },
+              { name: t("Nhân viên") },
+            ]}
+          />
         </div>
         <Grid container spacing={3}>
           <Grid item lg={7} md={7} sm={12} xs={12}>
@@ -333,15 +401,23 @@ class Personnel extends React.Component {
               variant="contained"
               color="primary"
               onClick={() => {
-                this.handleEditItem({ startDate: new Date(), endDate: new Date() });
-              }
+                this.handleEditItem({
+                  startDate: new Date(),
+                  endDate: new Date(),
+                });
+              }}
+            >
+              {t("Add")}
+            </Button>
+            <Button
+              className="mb-16 mr-36"
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                this.setState({ shouldOpenConfirmationDeleteAllDialog: true })
               }
             >
-              {t('Add')}
-            </Button>
-            <Button className="mb-16 mr-36" variant="contained" color="primary"
-              onClick={() => this.setState({ shouldOpenConfirmationDeleteAllDialog: true })}>
-              {t('Delete')}
+              {t("Delete")}
             </Button>
 
             {shouldOpenConfirmationDeleteAllDialog && (
@@ -350,15 +426,15 @@ class Personnel extends React.Component {
                 onConfirmDialogClose={this.handleDialogClose}
                 onYesClick={this.handleDeleteAll}
                 title={t("confirm")}
-                text={t('DeleteAllConfirm')}
-                Yes={t('Yes')}
-                No={t('No')}
+                text={t("DeleteAllConfirm")}
+                Yes={t("Yes")}
+                No={t("No")}
               />
             )}
           </Grid>
           <Grid item lg={5} md={5} sm={12} xs={12}>
             <Input
-              label={t('EnterSearch')}
+              label={t("EnterSearch")}
               type="text"
               name="keyword"
               value={keyword}
@@ -366,16 +442,20 @@ class Personnel extends React.Component {
               onKeyDown={this.handleKeyDownEnterSearch}
               className="w-100 mb-16 mr-10 stylePlaceholder"
               id="search_box"
-              placeholder={t('general.enterSearch')}
+              placeholder={t("general.enterSearch")}
               startAdornment={
-                <InputAdornment >
-                  <Link to="#"> <SearchIcon
-                    onClick={() => this.search()}
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      right: "0"
-                    }} /></Link>
+                <InputAdornment>
+                  <Link to="#">
+                    {" "}
+                    <SearchIcon
+                      onClick={() => this.search()}
+                      style={{
+                        position: "absolute",
+                        top: "0",
+                        right: "0",
+                      }}
+                    />
+                  </Link>
                 </InputAdornment>
               }
             />
@@ -384,7 +464,9 @@ class Personnel extends React.Component {
         <Grid item xs={12}>
           <div>
             {shouldOpenEditorDialog && (
-              <PersonnelEditorDialog t={t} i18n={i18n}
+              <PersonnelEditorDialog
+                t={t}
+                i18n={i18n}
                 handleClose={this.handleDialogClose}
                 open={shouldOpenEditorDialog}
                 handleOKEditClose={this.handleOKEditClose}
@@ -398,76 +480,75 @@ class Personnel extends React.Component {
                 open={shouldOpenConfirmationDialog}
                 onConfirmDialogClose={this.handleDialogClose}
                 onYesClick={this.handleConfirmationResponse}
-                text={t('DeleteConfirm')}
-                Yes={t('Yes')}
-                No={t('No')}
+                text={t("DeleteConfirm")}
+                Yes={t("Yes")}
+                No={t("No")}
               />
             )}
           </div>
           <MaterialTable
-            title={t('personnel.list')}
+            title={t("personnel.list")}
             data={itemList}
             columns={columns}
             parentChildData={(row, rows) => {
-              var list = rows.find(a => a.id === row.parentId);
+              var list = rows.find((a) => a.id === row.parentId);
               return list;
             }}
             options={{
-              selection: true,
+              selection: false,
               actionsColumnIndex: -1,
               paging: false,
               search: false,
               rowStyle: (rowData, index) => ({
-                  backgroundColor: (index % 2 === 1) ? '#EEE' : '#FFF',
-                }),
-              maxBodyHeight: '450px',
-              minBodyHeight: '370px',
+                backgroundColor: index % 2 === 1 ? "#EEE" : "#FFF",
+              }),
+              maxBodyHeight: "450px",
+              minBodyHeight: "370px",
               headerStyle: {
-                backgroundColor: '#358600',
-                color: '#fff',
+                backgroundColor: "#358600",
+                color: "#fff",
               },
-              padding: 'dense',
-              toolbar: false
+              padding: "dense",
+              toolbar: false,
             }}
             components={{
-              Toolbar: props => (
-                <MTableToolbar {...props} />
-              ),
+              Toolbar: (props) => <MTableToolbar {...props} />,
             }}
             onSelectionChange={(rows) => {
               this.data = rows;
             }}
             localization={{
-                body: {
-                  emptyDataSourceMessage: `${t(
-                    "general.emptyDataMessageTable"
-                  )}`,
-                },
-              }}
+              body: {
+                emptyDataSourceMessage: `${t("general.emptyDataMessageTable")}`,
+              },
+            }}
           />
           <TablePagination
             align="left"
             className="px-16"
             rowsPerPageOptions={[1, 2, 3, 5, 10, 25]}
             component="div"
-            labelRowsPerPage={t('general.rows_per_page')}
-            labelDisplayedRows={({ from, to, count }) => `${from}-${to} ${t('general.of')} ${count !== -1 ? count : `more than ${to}`}`}
+            labelRowsPerPage={t("general.rows_per_page")}
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}-${to} ${t("general.of")} ${
+                count !== -1 ? count : `more than ${to}`
+              }`
+            }
             count={totalElements}
             rowsPerPage={rowsPerPage}
             page={page}
             backIconButtonProps={{
-              "aria-label": "Previous Page"
+              "aria-label": "Previous Page",
             }}
             nextIconButtonProps={{
-              "aria-label": "Next Page"
+              "aria-label": "Next Page",
             }}
             onChangePage={this.handleChangePage}
             onChangeRowsPerPage={this.setRowsPerPage}
           />
         </Grid>
       </div>
-
-    )
+    );
   }
 }
 export default Personnel;

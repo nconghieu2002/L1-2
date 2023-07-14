@@ -7,61 +7,84 @@ import {
   FormControl,
   MenuItem,
   Select,
-  DialogActions, Icon, IconButton
+  DialogActions,
+  Icon,
+  IconButton,
 } from "@material-ui/core";
 
-import MaterialTable, { MTableToolbar, Chip, MTableBody, MTableHeader } from 'material-table';
-import { ValidatorForm, TextValidator, TextField } from "react-material-ui-form-validator";
-import { getAllQualification, getAllHealthOrg, saveItem, getItemById } from "./PresonnelService";
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Draggable from 'react-draggable';
-import Paper from '@material-ui/core/Paper';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
+import MaterialTable, {
+  MTableToolbar,
+  Chip,
+  MTableBody,
+  MTableHeader,
+} from "material-table";
+import {
+  ValidatorForm,
+  TextValidator,
+  TextField,
+} from "react-material-ui-form-validator";
+import {
+  getAll,
+  searchByPage,
+  getItemById,
+  deleteItem,
+  saveItem,
+} from "./PersonnelService";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Draggable from "react-draggable";
+import Paper from "@material-ui/core/Paper";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { el } from "date-fns/locale";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../../../styles/views/_style.scss';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../../styles/views/_style.scss";
 
 toast.configure({
   autoClose: 1000,
   draggable: false,
-  limit:3
+  limit: 3,
 });
 function PaperComponent(props) {
   return (
-    <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
       <Paper {...props} />
     </Draggable>
   );
 }
 class PersonnelEditorDialog extends Component {
   state = {
-    firstName: '',
-    lastName: '',
-    displayName: '',
-    gender: '',
-    healthOrg:[],
+    firstName: "",
+    lastName: "",
+    displayName: "",
+    gender: "",
+    healthOrg: [],
     birthDate: null,
-    phoneNumber:'',
-    idNumber:'',
-    email:'',
+    phoneNumber: "",
+    idNumber: "",
+    email: "",
     isView: false,
-    address:[],
+    address: [],
     shouldOpenSearchDialog: false,
     shouldOpenConfirmationDialog: false,
   };
 
   listGender = [
-    { id: 1, name: 'Nam' },
-    { id: 2, name: 'Nữ' },
-    { id: 3, name: 'Không xác định' }
-  ]
+    { id: 1, name: "Nam" },
+    { id: 2, name: "Nữ" },
+    { id: 3, name: "Không xác định" },
+  ];
 
   handleDateChange = (date, name) => {
     this.setState({
-      [name]: date
+      [name]: date,
     });
   };
 
@@ -73,64 +96,68 @@ class PersonnelEditorDialog extends Component {
     }
     if (source === "firstName") {
       let { lastName } = this.state;
-      let displayName = event.target.value.trim() + " " + (lastName ? lastName : '');
-      this.setState({ firstName: event.target.value, displayName: displayName });
+      let displayName =
+        event.target.value.trim() + " " + (lastName ? lastName : "");
+      this.setState({
+        firstName: event.target.value,
+        displayName: displayName,
+      });
       return;
-    }
-    else if (source === "lastName") {
+    } else if (source === "lastName") {
       let { firstName } = this.state;
-      let displayName = firstName.trim() + " " + (event.target.value.trim() ? event.target.value.trim() : '');
+      let displayName =
+        firstName.trim() +
+        " " +
+        (event.target.value.trim() ? event.target.value.trim() : "");
       this.setState({ lastName: event.target.value, displayName: displayName });
       return;
     }
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   handleFormSubmit = () => {
     let { t } = this.props;
     let { id } = this.state;
-    this.setState({isView: true});
+    this.setState({ isView: true });
     if (id) {
       saveItem({
-        ...this.state
+        ...this.state,
       }).then(() => {
-        this.setState({isView: false});
+        this.setState({ isView: false });
         // this.props.handleOKEditClose();
-        toast.success(t('mess_edit'));
+        toast.success(t("mess_edit"));
       });
-    }
-    else {
+    } else {
       saveItem({
-        ...this.state
+        ...this.state,
       }).then((response) => {
-        if(response.data != null && response.status == 200){
-          this.state.id = response.data.id
-          this.setState({...this.state, isView: false})
-          toast.success(t('mess_add'));
+        if (response.data != null && response.status == 200) {
+          this.state.id = response.data.id;
+          this.setState({ ...this.state, isView: false });
+          toast.success(t("mess_add"));
         }
       });
-      
     }
   };
 
   componentWillMount() {
     let { open, handleClose, item } = this.props;
     this.setState({
-      ...this.props.item
+      ...this.props.item,
     });
   }
 
   handleSearchDialogClose = () => {
     this.setState({
-      shouldOpenSearchDialog: false
+      shouldOpenSearchDialog: false,
     });
   };
-  
+
   render() {
     let { open, handleClose, handleOKEditClose, t, i18n } = this.props;
-    let searchObject = { pageIndex: 1, pageSize: 100000, text:"" };
+    let searchObject = { pageIndex: 1, pageSize: 100000, text: "" };
     let {
       id,
       firstName,
@@ -147,34 +174,52 @@ class PersonnelEditorDialog extends Component {
       email,
       address,
       isView,
-      shouldOpenSearchEQAHealthOrgSearchDialog
+      shouldOpenSearchEQAHealthOrgSearchDialog,
     } = this.state;
 
     return (
-      <Dialog  open={open} PaperComponent={PaperComponent} maxWidth={'md'} fullWidth={true} >
-        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-        <span className="mb-20 styleColor"> {(id ? t("update") : t("Add")) + " " + t("personnel.title")} </span>
-        <IconButton style={{ position: "absolute", right: "10px", top: "10px" }} onClick={() => handleClose()}><Icon color="error"
-              title={t("close")}>
+      <Dialog
+        open={open}
+        PaperComponent={PaperComponent}
+        maxWidth={"md"}
+        fullWidth={true}
+      >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          <span className="mb-20 styleColor">
+            {" "}
+            {(id ? t("update") : t("Add")) + " " + t("personnel.title")}{" "}
+          </span>
+          <IconButton
+            style={{ position: "absolute", right: "10px", top: "10px" }}
+            onClick={() => handleClose()}
+          >
+            <Icon color="error" title={t("close")}>
               close
             </Icon>
-            </IconButton>
+          </IconButton>
         </DialogTitle>
-        
-        <ValidatorForm ref="form" onSubmit={this.handleFormSubmit} style={{
+
+        <ValidatorForm
+          ref="form"
+          onSubmit={this.handleFormSubmit}
+          style={{
             overflowY: "auto",
             display: "flex",
-            flexDirection: "column"
-          }}>
+            flexDirection: "column",
+          }}
+        >
           <DialogContent dividers>
             <Grid className="" container spacing={2}>
               <Grid item lg={3} md={3} sm={12} xs={12}>
                 <TextValidator
                   className="w-100"
-                  label={<span className="font"><span style={{ color: "red" }}> * </span>
-                      {t("general.firstName")}
-                      </span>}
-                  onChange={value => this.handleChange(value, 'firstName')}
+                  label={
+                    <span className="font">
+                      <span style={{ color: "red" }}> * </span>
+                      {t("staff.firstName")}
+                    </span>
+                  }
+                  onChange={(value) => this.handleChange(value, "firstName")}
                   type="text"
                   name="firstName"
                   value={firstName}
@@ -187,10 +232,13 @@ class PersonnelEditorDialog extends Component {
               <Grid item lg={4} md={4} sm={12} xs={12}>
                 <TextValidator
                   className="w-100"
-                  label={<span className="font"><span style={{ color: "red" }}> * </span>
-                      {t("general.lastName")}
-                      </span>}
-                  onChange={value => this.handleChange(value, 'lastName')}
+                  label={
+                    <span className="font">
+                      <span style={{ color: "red" }}> * </span>
+                      {t("staff.lastName")}
+                    </span>
+                  }
+                  onChange={(value) => this.handleChange(value, "lastName")}
                   type="text"
                   name="lastName"
                   value={lastName}
@@ -204,7 +252,7 @@ class PersonnelEditorDialog extends Component {
                 <TextValidator
                   disabled={true}
                   className="w-100"
-                  label={<span className="font">{t("general.displayName")}</span>}
+                  label={<span className="font">{t("staff.displayName")}</span>}
                   type="text"
                   name="displayName"
                   value={displayName}
@@ -213,36 +261,42 @@ class PersonnelEditorDialog extends Component {
                 />
               </Grid>
               <Grid item lg={3} md={3} sm={12} xs={12}>
-                <FormControl fullWidth={true} variant="outlined" size = "small">
-                  <InputLabel htmlFor="gender-simple">{<span className="font">{t('general.gender')}</span>}</InputLabel>
+                <FormControl fullWidth={true} variant="outlined" size="small">
+                  <InputLabel htmlFor="gender-simple">
+                    {<span className="font">{t("staff.gender")}</span>}
+                  </InputLabel>
                   <Select
-                    value={gender ? gender : ''}
+                    value={gender ? gender : ""}
                     onChange={this.handleChange}
                     inputProps={{
                       name: "gender",
-                      id: "gender-simple"
+                      id: "gender-simple",
                     }}
                   >
-                    {this.listGender.map(item => {
-                      return <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>;
+                    {this.listGender.map((item) => {
+                      return (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      );
                     })}
                   </Select>
                 </FormControl>
               </Grid>
-             
+
               <Grid item lg={4} md={4} sm={12} xs={12}>
                 <TextValidator
                   className="w-100"
                   // label={<span><span style={{ color: "red" }}> * </span>
                   //     {t("general.phoneNumber")}
                   //     </span>}
-                  label =  {<span className="font">{t("general.phoneNumber")}</span>}
+                  label={<span className="font">{t("staff.phoneNumber")}</span>}
                   onChange={this.handleChange}
                   type="text"
                   name="phoneNumber"
                   value={phoneNumber}
-                  validators={['isNumber']}
-                  errorMessages={[ t("general.isNumber")]}
+                  validators={["isNumber"]}
+                  errorMessages={[t("general.isNumber")]}
                   variant="outlined"
                   size="small"
                 />
@@ -250,12 +304,12 @@ class PersonnelEditorDialog extends Component {
               <Grid item lg={5} md={5} sm={12} xs={12}>
                 <TextValidator
                   className="w-100"
-                  label={<span className="font">{t("general.idNumber")}</span>}
+                  label={<span className="font">{t("staff.idNumber")}</span>}
                   onChange={this.handleChange}
                   type="text"
                   name="idNumber"
                   value={idNumber}
-                  validators={['isNumber']}
+                  validators={["isNumber"]}
                   errorMessages={[t("general.errorMessages_required")]}
                   variant="outlined"
                   size="small"
@@ -267,12 +321,14 @@ class PersonnelEditorDialog extends Component {
                     fullWidth
                     margin="none"
                     id="mui-pickers-date"
-                    label={<span className="font">{t('general.birthDate')}</span>}
-                    inputVariant="standard"
+                    label={<span className="font">{t("staff.birthDate")}</span>}
+                    // inputVariant="standard"
                     type="text"
                     format="dd/MM/yyyy"
                     value={birthDate}
-                    onChange={date => this.handleDateChange(date, "birthDate")}
+                    onChange={(date) =>
+                      this.handleDateChange(date, "birthDate")
+                    }
                     inputVariant="outlined"
                     size="small"
                   />
@@ -284,37 +340,39 @@ class PersonnelEditorDialog extends Component {
                   // label={<span><span style={{ color: "red" }}> * </span>
                   //     {t("general.email")}
                   //     </span>}
-                  label =  {<span className="font">{t("general.email")}</span>}
+                  label={<span className="font">{t("staff.email")}</span>}
                   onChange={this.handleChange}
-                  placeholder='example@gmail.com'
+                  placeholder="example@gmail.com"
                   type="email"
                   name="email"
                   value={email}
-                  validators={['isEmail']}
+                  validators={["isEmail"]}
                   errorMessages={[t("general.errorMessages_email_valid")]}
                   variant="outlined"
                   size="small"
                 />
               </Grid>
             </Grid>
- 	        </DialogContent>
-            
-            <DialogActions spacing={4} className="flex flex-end flex-middle">
-              <Button 
-                variant="contained" 
-                color="secondary" 
-                onClick={() => this.props.handleClose()}>
-                  {t('Cancel')}
-              </Button>
-              <Button
-                disabled = {isView}
-                variant="contained"    
-                color="primary" 
-                type="submit">
-                  {t('Save')}
-              </Button>
-            </DialogActions>
-          </ValidatorForm> 
+          </DialogContent>
+
+          <DialogActions spacing={4} className="flex flex-end flex-middle">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => this.props.handleClose()}
+            >
+              {t("Cancel")}
+            </Button>
+            <Button
+              disabled={isView}
+              variant="contained"
+              color="primary"
+              type="submit"
+            >
+              {t("Save")}
+            </Button>
+          </DialogActions>
+        </ValidatorForm>
       </Dialog>
     );
   }
