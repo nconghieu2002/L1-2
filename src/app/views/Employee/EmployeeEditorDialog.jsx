@@ -59,6 +59,8 @@ function PaperComponent(props) {
 const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   const { t } = useTranslation();
 
+  const formRef = useRef(null);
+
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [age, setAge] = useState();
@@ -66,6 +68,12 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [email, setEmail] = useState();
 
+  const [provinces, setProvinces] = useState([]);
+  const [provinceId, setProvinceId] = useState("");
+  const [districts, setDistricts] = useState([]);
+  const [districtId, setDistrictId] = useState("");
+  const [wards, setWards] = useState([]);
+  const [wardId, setWardId] = useState("");
   // const [employeeData, setEmployeeData] = useState({
   //   provinceId: "",
   //   provinceList: [],
@@ -74,15 +82,6 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   //   wardsId: "",
   //   wardList: [],
   // });
-
-  const [provinces, setProvinces] = useState([]);
-  const [provinceId, setProvinceId] = useState("");
-  const [districts, setDistricts] = useState([]);
-  const [districtId, setDistrictId] = useState("");
-  const [wards, setWards] = useState([]);
-  const [wardId, setWardId] = useState("");
-
-  const formRef = useRef(null);
 
   useEffect(() => {
     fetchAddress();
@@ -102,6 +101,20 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
     try {
       const response = await getDistrictsByProvinces(id);
       console.log(response.data.data);
+      setDistricts(response.data.data);
+      setDistrictId(""); // Reset giá trị huyện khi thay đổi tỉnh
+      setWards([]); // Reset giá trị phường/ xã khi thay đổi tỉnh
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchWards = async (id) => {
+    try {
+      const response = await getWardsByDistricts(id);
+      console.log(response.data.data);
+      setWards(response.data.data);
+      setWardId(""); // Reset giá trị phường/ xã khi thay đổi huyện
     } catch (error) {
       console.error(error);
     }
@@ -131,7 +144,15 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
         break;
       case "provinceId":
         setProvinceId(value);
-        fetchDistrict(provinceId);
+        fetchDistrict(value);
+        break;
+      case "districtId":
+        setDistrictId(value);
+        fetchWards(value);
+        break;
+      case "wardId":
+        setWardId(value);
+        break;
       default:
         break;
     }
@@ -148,6 +169,8 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
       phone: phoneNumber,
       email,
       provinceId,
+      districtId,
+      wardId,
     };
 
     try {
@@ -325,10 +348,50 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
                   // value={"province"}
                   onChange={handleChange}
                   name="provinceId"
+                  value={provinceId}
                 >
                   {provinces.map((province) => (
-                    <MenuItem key={province.id} value={province.name}>
+                    <MenuItem key={province.id} value={province.id}>
                       {province.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item lg={4} md={4} xs={12} sm={6}>
+              <FormControl fullWidth={true} variant="outlined" size="small">
+                <InputLabel style={{ backgroundColor: "white" }}>
+                  {<span className="font">{t("Huyện")}</span>}
+                </InputLabel>
+                <Select
+                  id="district-select"
+                  onChange={handleChange}
+                  name="districtId"
+                  value={districtId}
+                >
+                  {districts.map((district) => (
+                    <MenuItem key={district.id} value={district.id}>
+                      {district.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item lg={4} md={4} xs={12} sm={6}>
+              <FormControl fullWidth={true} variant="outlined" size="small">
+                <InputLabel style={{ backgroundColor: "white" }}>
+                  {<span className="font">{t("Phường/Xã")}</span>}
+                </InputLabel>
+                <Select
+                  id="ward-select"
+                  onChange={handleChange}
+                  name="wardId"
+                  value={wardId}
+                >
+                  {wards.map((ward) => (
+                    <MenuItem key={ward.id} value={ward.id}>
+                      {ward.name}
                     </MenuItem>
                   ))}
                 </Select>
