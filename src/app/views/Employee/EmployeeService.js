@@ -1,6 +1,22 @@
 import axios from "axios";
 import ConstantList from "../../appConfig";
 const API_PATH = ConstantList.API_ENPOINT + "/api/employees";
+const API_ADDRESS = ConstantList.API_ENPOINT + "/api";
+
+export const getProvinces = () => {
+  const url = API_ADDRESS + "/provinces/all";
+  return axios.get(url);
+};
+
+export const getDistrictsByProvinces = (id) => {
+  const url = API_ADDRESS + "/provinces/" + id + "/districts";
+  return axios.get(url);
+};
+
+export const getWardsByDistricts = (id) => {
+  const url = API_ADDRESS + "/districts/" + id + "/wards";
+  return axios.get(url);
+};
 
 export const getAll = () => {
   return axios.get(API_PATH + "/all");
@@ -32,8 +48,8 @@ export const searchByPage = (search) => {
 //grt - exportData
 // import axios from "axios";
 // import ConstantList from "../../appConfig";
-// const API_GENERAL = ConstantList.API_ENPOINT + "/api/";
-// const API_PATH = API_GENERAL + "/employees/";
+// const API_ADDRESS = ConstantList.API_ENPOINT + "/api/";
+// const API_PATH = API_ADDRESS + "/employees/";
 
 // export const searchEmployees = (searchTerm) => {
 //   const url = API_PATH + "page";
@@ -41,26 +57,26 @@ export const searchByPage = (search) => {
 // };
 
 // export const getProvinces = () => {
-//   const url = API_GENERAL + "provinces/all";
+//   const url = API_ADDRESS + "provinces/all";
 //   return axios.get(url);
 // };
 
 // export const getDistrictsByProvinces = (id) => {
-//   const url = API_GENERAL + "/provinces/" + id + "/districts";
+//   const url = API_ADDRESS + "/provinces/" + id + "/districts";
 //   return axios.get(url);
 // };
 
 // export const getWardsByDistricts = (id) => {
-//   const url = API_GENERAL + "/districts/" + id + "/wards";
+//   const url = API_ADDRESS + "/districts/" + id + "/wards";
 //   return axios.get(url);
 // };
 // export const addEmployee = (data) => {
-//   var url = API_GENERAL + "employees";
+//   var url = API_ADDRESS + "employees";
 //   return axios.post(url, data);
 // };
 
 // export const deleteEmployee = (id) => {
-//   var url = API_GENERAL + "employees/" + id;
+//   var url = API_ADDRESS + "employees/" + id;
 //   return axios.delete(url);
 // };
 

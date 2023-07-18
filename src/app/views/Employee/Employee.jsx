@@ -57,7 +57,12 @@ const Employee = () => {
               <Icon color="primary">edit</Icon>
             </IconButton>
             <IconButton>
-              <Icon style={{ color: "red" }}>delete</Icon>
+              <Icon
+                style={{ color: "red" }}
+                onClick={handleDeleteEmployee(data.id)}
+              >
+                delete
+              </Icon>
             </IconButton>
           </div>
         );
@@ -124,6 +129,11 @@ const Employee = () => {
 
   const handleCLoseDialogEmployee = () => {
     setOpenDialogEmployee(false);
+  };
+
+  const handleDeleteEmployee = (data) => {
+    // const response = await deleteEmployee(id)
+    console.log(data);
   };
 
   return (
