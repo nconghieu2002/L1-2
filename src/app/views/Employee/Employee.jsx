@@ -25,6 +25,7 @@ import {
   exportEmployee,
   getAll,
   searchByPage,
+  saveEmployee,
 } from "./EmployeeService";
 import { toast } from "react-toastify";
 import { saveAs } from "file-saver";
@@ -58,7 +59,7 @@ const Employee = () => {
             <IconButton>
               <Icon color="primary">edit</Icon>
             </IconButton>
-            <IconButton onClick={() => fetchDeleteEmployee(data.id)}>
+            <IconButton onClick={() => handleDeleteEmployee(data.id)}>
               <Icon style={{ color: "red" }}>delete</Icon>
             </IconButton>
           </div>
@@ -104,21 +105,16 @@ const Employee = () => {
   const fetchData = async () => {
     try {
       const response = await searchByPage({ keyword: searchInputValue });
-      console.log(response);
       setListEmployees(response?.data?.data?.content);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const Log = (data) => {
-    console.log(data);
-  };
-
-  const fetchDeleteEmployee = async (id) => {
+  const handleDeleteEmployee = async (id) => {
     try {
       const response = await deleteEmployee(id);
-      setListEmployees(response.data.data.content);
+      fetchData();
     } catch (error) {
       console.error(error);
     }
@@ -139,11 +135,6 @@ const Employee = () => {
 
   const handleCLoseDialogEmployee = () => {
     setOpenDialogEmployee(false);
-  };
-
-  const handleDeleteEmployee = (data) => {
-    // const response = await deleteEmployee(id)
-    console.log(data);
   };
 
   const handleChangeEmployee = () => {
