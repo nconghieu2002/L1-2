@@ -44,6 +44,8 @@ const Employee = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialogEmployee, setOpenDialogEmployee] = useState(false);
 
+  const [changeEmployee, setChangeEmployee] = useState(false);
+
   const columns = [
     {
       title: t("Action"),
@@ -56,13 +58,8 @@ const Employee = () => {
             <IconButton>
               <Icon color="primary">edit</Icon>
             </IconButton>
-            <IconButton>
-              <Icon
-                style={{ color: "red" }}
-                onClick={handleDeleteEmployee(data.id)}
-              >
-                delete
-              </Icon>
+            <IconButton onClick={() => fetchDeleteEmployee(data.id)}>
+              <Icon style={{ color: "red" }}>delete</Icon>
             </IconButton>
           </div>
         );
@@ -102,13 +99,26 @@ const Employee = () => {
 
   useEffect(() => {
     fetchData();
-  }, [searchInputValue]);
+  }, [searchInputValue, changeEmployee]);
 
   const fetchData = async () => {
     try {
       const response = await searchByPage({ keyword: searchInputValue });
       console.log(response);
       setListEmployees(response?.data?.data?.content);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const Log = (data) => {
+    console.log(data);
+  };
+
+  const fetchDeleteEmployee = async (id) => {
+    try {
+      const response = await deleteEmployee(id);
+      setListEmployees(response.data.data.content);
     } catch (error) {
       console.error(error);
     }
@@ -134,6 +144,10 @@ const Employee = () => {
   const handleDeleteEmployee = (data) => {
     // const response = await deleteEmployee(id)
     console.log(data);
+  };
+
+  const handleChangeEmployee = () => {
+    setChangeEmployee(!changeEmployee);
   };
 
   return (
@@ -238,6 +252,7 @@ const Employee = () => {
         <EmployeeEditorDialog
           open={openDialogEmployee}
           onClose={handleCLoseDialogEmployee}
+          handleChangeEmployee={handleChangeEmployee}
         />
       )}
     </div>

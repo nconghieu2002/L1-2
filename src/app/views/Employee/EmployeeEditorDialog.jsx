@@ -56,7 +56,7 @@ function PaperComponent(props) {
   );
 }
 
-const EmployeeEditorDialog = ({ open, onClose, editData }) => {
+const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
   const { t } = useTranslation();
 
   const formRef = useRef(null);
@@ -67,7 +67,6 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   const [idNumber, setIdNumber] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const [email, setEmail] = useState();
-
   const [provinces, setProvinces] = useState([]);
   const [provinceId, setProvinceId] = useState("");
   const [districts, setDistricts] = useState([]);
@@ -84,26 +83,24 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   // });
 
   useEffect(() => {
-    fetchAddress();
+    fetchProvinces();
   }, []);
 
-  const fetchAddress = async () => {
+  const fetchProvinces = async () => {
     try {
       const response = await getProvinces();
-      console.log(response.data.data);
       setProvinces(response.data.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const fetchDistrict = async (id) => {
+  const fetchDistricts = async (id) => {
     try {
       const response = await getDistrictsByProvinces(id);
-      console.log(response.data.data);
       setDistricts(response.data.data);
       setDistrictId(""); // Reset giá trị huyện khi thay đổi tỉnh
-      setWards([]); // Reset giá trị phường/ xã khi thay đổi tỉnh
+      setWardId(""); // Reset giá trị phường/ xã khi thay đổi tỉnh
     } catch (error) {
       console.error(error);
     }
@@ -112,7 +109,6 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   const fetchWards = async (id) => {
     try {
       const response = await getWardsByDistricts(id);
-      console.log(response.data.data);
       setWards(response.data.data);
       setWardId(""); // Reset giá trị phường/ xã khi thay đổi huyện
     } catch (error) {
@@ -144,7 +140,7 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
         break;
       case "provinceId":
         setProvinceId(value);
-        fetchDistrict(value);
+        fetchDistricts(value);
         break;
       case "districtId":
         setDistrictId(value);
@@ -161,7 +157,6 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // Tạo đối tượng nhân viên từ các giá trị state
     const employee = {
       name: lastName + " " + firstName,
       age,
@@ -170,22 +165,15 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
       email,
       provinceId,
       districtId,
-      wardId,
+      wardsId: wardId,
     };
 
     try {
-      // Gọi API để lưu nhân viên
       const response = await saveEmployee(employee);
-
-      // Xử lý phản hồi từ API (response)
-      console.log(response.data); // In ra dữ liệu phản hồi từ API
-      // Thực hiện các hành động khác sau khi lưu thành công
-      // ...
+      onClose();
+      handleChangeEmployee();
     } catch (error) {
-      // Xử lý lỗi khi gọi API
       console.error(error);
-      // Thực hiện các hành động khác khi xảy ra lỗi
-      // ...
     }
   };
 
@@ -335,17 +323,13 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
             </Grid>
 
             {/* address */}
-
             <Grid item lg={4} md={4} xs={12} sm={6}>
               <FormControl fullWidth={true} variant="outlined" size="small">
                 <InputLabel style={{ backgroundColor: "white" }}>
                   {<span className="font">{t("Tỉnh")}</span>}
                 </InputLabel>
                 <Select
-                  // fullWidth
-                  // labelId="province-select-label"
                   id="province-select"
-                  // value={"province"}
                   onChange={handleChange}
                   name="provinceId"
                   value={provinceId}
@@ -377,7 +361,6 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
                 </Select>
               </FormControl>
             </Grid>
-
             <Grid item lg={4} md={4} xs={12} sm={6}>
               <FormControl fullWidth={true} variant="outlined" size="small">
                 <InputLabel style={{ backgroundColor: "white" }}>
@@ -397,55 +380,9 @@ const EmployeeEditorDialog = ({ open, onClose, editData }) => {
                 </Select>
               </FormControl>
             </Grid>
-
-            {/* <Grid item lg={4} md={4} xs={12} sm={6}>
-              <FormControl fullWidth={true} variant="outlined" size="small">
-                <Select
-                  fullWidth
-                  // disabled={!employeeData.provinceId}
-                  labelId="district-select-label"
-                  id="district-select"
-                  // value={employeeData.districtId}
-                  onChange={handleChange}
-                  name="districtId"
-                  // displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    {t("employee.district")}
-                  </MenuItem>
-                  {districts.map((district) => (
-                    <MenuItem key={district.id} value={district.id}>
-                      {district.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid> */}
-            {/* <Grid item lg={4} md={4} xs={12} sm={6}>
-              <FormControl fullWidth={true} variant="outlined" size="small">
-                <Select
-                  fullWidth
-                  disabled={!employeeData.districtId}
-                  labelId="ward-select-label"
-                  id="ward-select"
-                  value={employeeData.wardsId}
-                  onChange={handleChange}
-                  name="wardsId"
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    {t("employee.ward")}
-                  </MenuItem>
-                  {employeeData.wardList.map((ward) => (
-                    <MenuItem key={ward.id} value={ward.id}>
-                      {ward.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid> */}
           </Grid>
         </DialogContent>
+
         <DialogActions spacing={4} className="flex flex-end flex-middle">
           <Button variant="contained" color="secondary" onClick={onClose}>
             {t("Cancel")}
