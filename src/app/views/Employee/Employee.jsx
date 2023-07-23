@@ -44,7 +44,7 @@ const Employee = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialogEmployee, setOpenDialogEmployee] = useState(false);
-
+  const [editEmployee, setEditEmployee] = useState({});
   const [changeEmployee, setChangeEmployee] = useState(false);
 
   const columns = [
@@ -56,7 +56,7 @@ const Employee = () => {
       render: (data) => {
         return (
           <div>
-            <IconButton>
+            <IconButton onClick={() => handleEditEmployee(data)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
             <IconButton onClick={() => handleDeleteEmployee(data.id)}>
@@ -129,7 +129,8 @@ const Employee = () => {
     setPage(0);
   };
 
-  const handleOpenDialogEmployee = () => {
+  const handleAddEmployee = () => {
+    setEditEmployee({});
     setOpenDialogEmployee(true);
   };
 
@@ -139,6 +140,12 @@ const Employee = () => {
 
   const handleChangeEmployee = () => {
     setChangeEmployee(!changeEmployee);
+  };
+
+  const handleEditEmployee = (data) => {
+    setEditEmployee(data);
+    setOpenDialogEmployee(true);
+    console.log(data);
   };
 
   return (
@@ -157,7 +164,7 @@ const Employee = () => {
             className="mb-16 mr-16"
             variant="contained"
             color="primary"
-            onClick={handleOpenDialogEmployee}
+            onClick={handleAddEmployee}
           >
             {t("Add")}
           </Button>
@@ -194,16 +201,11 @@ const Employee = () => {
 
       <Grid item xs={12}>
         <MaterialTable
-          // title={t("personnel.list")}
           data={listEmployees.slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage
           )}
           columns={columns}
-          // parentChildData={(row, rows) => {
-          //   var list = rows.find((a) => a.id === row.parentId);
-          //   return list;
-          // }}
           options={{
             selection: false,
             actionsColumnIndex: -1,
@@ -244,6 +246,7 @@ const Employee = () => {
           open={openDialogEmployee}
           onClose={handleCLoseDialogEmployee}
           handleChangeEmployee={handleChangeEmployee}
+          editEmployee={editEmployee}
         />
       )}
     </div>

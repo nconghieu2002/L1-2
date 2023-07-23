@@ -19,11 +19,7 @@ import MaterialTable, {
   MTableBody,
   MTableHeader,
 } from "material-table";
-import {
-  ValidatorForm,
-  TextValidator,
-  // TextField,
-} from "react-material-ui-form-validator";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -42,6 +38,7 @@ import {
   getProvinces,
   updateEmployee,
   saveEmployee,
+  getAllDistricts,
 } from "./EmployeeService";
 import { useTranslation } from "react-i18next";
 
@@ -56,35 +53,54 @@ function PaperComponent(props) {
   );
 }
 
-const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
+const EmployeeEditorDialog = ({
+  open,
+  onClose,
+  handleChangeEmployee,
+  editEmployee,
+}) => {
   const { t } = useTranslation();
 
   const formRef = useRef(null);
 
-  const [lastName, setLastName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [age, setAge] = useState();
-  const [idNumber, setIdNumber] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [email, setEmail] = useState();
   const [provinces, setProvinces] = useState([]);
-  const [provinceId, setProvinceId] = useState("");
   const [districts, setDistricts] = useState([]);
-  const [districtId, setDistrictId] = useState("");
   const [wards, setWards] = useState([]);
-  const [wardId, setWardId] = useState("");
-  // const [employeeData, setEmployeeData] = useState({
-  //   provinceId: "",
-  //   provinceList: [],
-  //   districtId: "",
-  //   districtList: [],
-  //   wardsId: "",
-  //   wardList: [],
-  // });
+
+  const [employee, setEmployee] = useState({
+    name: "",
+    age: "",
+    code: "",
+    phone: "",
+    email: "",
+    provinceId: "",
+    districtId: "",
+    wardsId: "",
+  });
+
+  useEffect(() => {
+    if (editEmployee) {
+      setEmployee({
+        ...editEmployee,
+      });
+    }
+  }, [editEmployee]);
 
   useEffect(() => {
     fetchProvinces();
   }, []);
+
+  useEffect(() => {
+    if (open && employee.provinceId !== "") {
+      fetchDistricts(employee.provinceId); // Gọi hàm để lấy danh sách huyện khi mở form và provinceId đã có giá trị
+    }
+  }, [open, employee.provinceId]);
+
+  useEffect(() => {
+    if (open && employee.districtId !== "") {
+      fetchWards(employee.districtId); // Gọi hàm để lấy danh sách xã khi mở form và districtId đã có giá trị
+    }
+  }, [open, employee.districtId]);
 
   const fetchProvinces = async () => {
     try {
@@ -99,8 +115,6 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
     try {
       const response = await getDistrictsByProvinces(id);
       setDistricts(response.data.data);
-      setDistrictId(""); // Reset giá trị huyện khi thay đổi tỉnh
-      setWardId(""); // Reset giá trị phường/ xã khi thay đổi tỉnh
     } catch (error) {
       console.error(error);
     }
@@ -110,7 +124,6 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
     try {
       const response = await getWardsByDistricts(id);
       setWards(response.data.data);
-      setWardId(""); // Reset giá trị phường/ xã khi thay đổi huyện
     } catch (error) {
       console.error(error);
     }
@@ -119,56 +132,26 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    switch (name) {
-      case "lastName":
-        setLastName(value);
-        break;
-      case "firstName":
-        setFirstName(value);
-        break;
-      case "age":
-        setAge(value);
-        break;
-      case "idNumber":
-        setIdNumber(value);
-        break;
-      case "phoneNumber":
-        setPhoneNumber(value);
-        break;
-      case "email":
-        setEmail(value);
-        break;
-      case "provinceId":
-        setProvinceId(value);
-        fetchDistricts(value);
-        break;
-      case "districtId":
-        setDistrictId(value);
-        fetchWards(value);
-        break;
-      case "wardId":
-        setWardId(value);
-        break;
-      default:
-        break;
+    if (name === "provinceId") {
+      fetchDistricts(value); // Gọi hàm để lấy danh sách huyện khi tỉnh thay đổi
+      console.log(employee);
+      setEmployee((prevState) => ({ ...prevState, districtId: "" })); // Xóa giá trị districtId để tránh hiển thị lựa chọn không hợp lệ khi tỉnh thay đổi
+      setEmployee((prevState) => ({ ...prevState, wardsId: "" })); // Xóa giá trị wardsId khi tỉnh thay đổi (nếu không có hàm này, giá trị wardsId của huyện trước đó vẫn còn)
+    } else if (name === "districtId") {
+      fetchWards(value); // Gọi hàm để lấy danh sách xã khi huyện thay đổi
+      setEmployee((prevState) => ({ ...prevState, wardsId: "" })); // Xóa giá trị wardsId khi tỉnh thay đổi (nếu không có hàm này, giá trị wardsId của huyện trước đó vẫn còn)
     }
+
+    setEmployee((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
-    const employee = {
-      name: lastName + " " + firstName,
-      age,
-      code: idNumber,
-      phone: phoneNumber,
-      email,
-      provinceId,
-      districtId,
-      wardsId: wardId,
-    };
-
     try {
+      console.log(employee);
       const response = await saveEmployee(employee);
       onClose();
       handleChangeEmployee();
@@ -217,8 +200,8 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                 }
                 onChange={handleChange}
                 type="text"
-                name="idNumber"
-                value={idNumber}
+                name="code"
+                value={employee.code}
                 validators={["isNumber"]}
                 errorMessages={[t("staff.errorMessages_required")]}
                 variant="outlined"
@@ -231,34 +214,15 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                 label={
                   <span className="font">
                     <span style={{ color: "red" }}> * </span>
-                    {t("staff.lastName")}
+                    {t("staff.name")}
                   </span>
                 }
                 onChange={handleChange}
                 type="text"
-                name="lastName"
-                value={lastName}
+                name="name"
+                value={employee.name}
                 // validators={["required"]}
                 errorMessages={[t("staff.errorMessages_required")]}
-                variant="outlined"
-                size="small"
-              />
-            </Grid>
-            <Grid item lg={5} md={5} sm={12} xs={12}>
-              <TextValidator
-                className="w-100"
-                label={
-                  <span className="font">
-                    <span style={{ color: "red" }}> * </span>
-                    {t("staff.firstName")}
-                  </span>
-                }
-                value={firstName}
-                onChange={handleChange}
-                type="text"
-                name="firstName"
-                validators={["required"]}
-                errorMessages={[t("general.errorMessages_email_valid")]}
                 variant="outlined"
                 size="small"
               />
@@ -275,7 +239,7 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                 onChange={handleChange}
                 type="text"
                 name="age"
-                value={age}
+                value={employee.age}
                 validators={["isNumber"]}
                 errorMessages={[t("general.errorMessages_required")]}
                 variant="outlined"
@@ -293,8 +257,8 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                 }
                 onChange={handleChange}
                 type="text"
-                name="phoneNumber"
-                value={phoneNumber}
+                name="phone"
+                value={employee.phone}
                 validators={["isNumber"]}
                 errorMessages={[t("general.isNumber")]}
                 variant="outlined"
@@ -314,7 +278,7 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                 placeholder="example@gmail.com"
                 type="email"
                 name="email"
-                value={email}
+                value={employee.email}
                 validators={["isEmail"]}
                 errorMessages={[t("general.errorMessages_email_valid")]}
                 variant="outlined"
@@ -332,7 +296,7 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                   id="province-select"
                   onChange={handleChange}
                   name="provinceId"
-                  value={provinceId}
+                  value={employee.provinceId}
                 >
                   {provinces.map((province) => (
                     <MenuItem key={province.id} value={province.id}>
@@ -351,7 +315,7 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                   id="district-select"
                   onChange={handleChange}
                   name="districtId"
-                  value={districtId}
+                  value={employee.districtId}
                 >
                   {districts.map((district) => (
                     <MenuItem key={district.id} value={district.id}>
@@ -369,8 +333,8 @@ const EmployeeEditorDialog = ({ open, onClose, handleChangeEmployee }) => {
                 <Select
                   id="ward-select"
                   onChange={handleChange}
-                  name="wardId"
-                  value={wardId}
+                  name="wardsId"
+                  value={employee.wardsId}
                 >
                   {wards.map((ward) => (
                     <MenuItem key={ward.id} value={ward.id}>

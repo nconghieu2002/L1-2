@@ -3,6 +3,11 @@ import ConstantList from "../../appConfig";
 const API_PATH = ConstantList.API_ENPOINT + "/api/employees";
 const API_ADDRESS = ConstantList.API_ENPOINT + "/api";
 
+export const getAllDistricts = () => {
+  const url = API_ADDRESS + "/districts/all";
+  return axios.get(url);
+};
+
 export const getProvinces = () => {
   const url = API_ADDRESS + "/provinces/all";
   return axios.get(url);
