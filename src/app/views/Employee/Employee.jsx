@@ -169,7 +169,7 @@ const Employee = () => {
             {t("Add")}
           </Button>
           <Button className="mb-16 mr-36" variant="contained" color="primary">
-            {t("Export")}
+            {t("general.exportToExcel")}
           </Button>
         </Grid>
         <Grid item lg={5} md={5} sm={12} xs={12}>

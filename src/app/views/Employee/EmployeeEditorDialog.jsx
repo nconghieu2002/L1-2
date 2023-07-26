@@ -168,7 +168,11 @@ const EmployeeEditorDialog = ({
       fullWidth={true}
     >
       <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-        <span className="mb-20 styleColor">{t("Add")}</span>
+        {editEmployee.id ? (
+          <span className="mb-20 styleColor">{t("Chỉnh sửa nhân viên")}</span>
+        ) : (
+          <span className="mb-20 styleColor">{t("Thêm mới nhân viên")}</span>
+        )}
         <IconButton
           style={{ position: "absolute", right: "10px", top: "10px" }}
           onClick={onClose}
@@ -189,7 +193,7 @@ const EmployeeEditorDialog = ({
       >
         <DialogContent>
           <Grid container spacing={2}>
-            <Grid item lg={2} md={2} sm={12} xs={12}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextValidator
                 className="w-100"
                 label={
@@ -202,13 +206,16 @@ const EmployeeEditorDialog = ({
                 type="text"
                 name="code"
                 value={employee.code}
-                validators={["isNumber"]}
-                errorMessages={[t("staff.errorMessages_required")]}
+                validators={["required", "matchRegexp:^.{6,10}$"]}
+                errorMessages={[
+                  t("general.errorMessages_required"),
+                  t("general.errorMessages_code_valid"),
+                ]}
                 variant="outlined"
                 size="small"
               />
             </Grid>
-            <Grid item lg={5} md={5} sm={12} xs={12}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextValidator
                 className="w-100"
                 label={
@@ -221,13 +228,13 @@ const EmployeeEditorDialog = ({
                 type="text"
                 name="name"
                 value={employee.name}
-                // validators={["required"]}
-                errorMessages={[t("staff.errorMessages_required")]}
+                validators={["required"]}
+                errorMessages={[t("general.errorMessages_required")]}
                 variant="outlined"
                 size="small"
               />
             </Grid>
-            <Grid item lg={2} md={2} sm={12} xs={12}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextValidator
                 className="w-100"
                 label={
@@ -240,13 +247,16 @@ const EmployeeEditorDialog = ({
                 type="text"
                 name="age"
                 value={employee.age}
-                validators={["isNumber"]}
-                errorMessages={[t("general.errorMessages_required")]}
+                validators={["required", "matchRegexp:^\\d+$"]}
+                errorMessages={[
+                  t("general.errorMessages_required"),
+                  t("general.errorMessages_age"),
+                ]}
                 variant="outlined"
                 size="small"
               />
             </Grid>
-            <Grid item lg={5} md={5} sm={12} xs={12}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <TextValidator
                 className="w-100"
                 label={
@@ -259,13 +269,16 @@ const EmployeeEditorDialog = ({
                 type="text"
                 name="phone"
                 value={employee.phone}
-                validators={["isNumber"]}
-                errorMessages={[t("general.isNumber")]}
+                validators={["required", "matchRegexp:^\\d{10}$"]}
+                errorMessages={[
+                  t("general.errorMessages_required"),
+                  t("general.errorMessages_phone"),
+                ]}
                 variant="outlined"
                 size="small"
               />
             </Grid>
-            <Grid item lg={5} md={5} sm={12} xs={12}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
               <TextValidator
                 className="w-100"
                 label={
@@ -279,8 +292,11 @@ const EmployeeEditorDialog = ({
                 type="email"
                 name="email"
                 value={employee.email}
-                validators={["isEmail"]}
-                errorMessages={[t("general.errorMessages_email_valid")]}
+                validators={["required", "isEmail"]}
+                errorMessages={[
+                  t("general.errorMessages_required"),
+                  t("general.errorMessages_email_valid"),
+                ]}
                 variant="outlined"
                 size="small"
               />
@@ -290,7 +306,12 @@ const EmployeeEditorDialog = ({
             <Grid item lg={4} md={4} xs={12} sm={6}>
               <FormControl fullWidth={true} variant="outlined" size="small">
                 <InputLabel style={{ backgroundColor: "white" }}>
-                  {<span className="font">{t("Tỉnh")}</span>}
+                  {
+                    <span className="font">
+                      <span style={{ color: "red" }}> * </span>
+                      {t("Tỉnh")}
+                    </span>
+                  }
                 </InputLabel>
                 <Select
                   id="province-select"
@@ -309,7 +330,12 @@ const EmployeeEditorDialog = ({
             <Grid item lg={4} md={4} xs={12} sm={6}>
               <FormControl fullWidth={true} variant="outlined" size="small">
                 <InputLabel style={{ backgroundColor: "white" }}>
-                  {<span className="font">{t("Huyện")}</span>}
+                  {
+                    <span className="font">
+                      <span style={{ color: "red" }}> * </span>
+                      {t("Huyện")}
+                    </span>
+                  }
                 </InputLabel>
                 <Select
                   id="district-select"
@@ -328,7 +354,12 @@ const EmployeeEditorDialog = ({
             <Grid item lg={4} md={4} xs={12} sm={6}>
               <FormControl fullWidth={true} variant="outlined" size="small">
                 <InputLabel style={{ backgroundColor: "white" }}>
-                  {<span className="font">{t("Phường/Xã")}</span>}
+                  {
+                    <span className="font">
+                      <span style={{ color: "red" }}> * </span>
+                      {t("Phường")}
+                    </span>
+                  }
                 </InputLabel>
                 <Select
                   id="ward-select"

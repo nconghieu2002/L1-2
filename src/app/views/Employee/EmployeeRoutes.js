@@ -8,7 +8,7 @@ const ViewComponent = withTranslation()(Employee);
 
 const EmployeeRoutes = [
   {
-    path: ConstantList.ROOT_PATH + "user_manager/employee",
+    path: ConstantList.ROOT_PATH + "employee_manager/employee",
     exact: true,
     component: ViewComponent,
   },

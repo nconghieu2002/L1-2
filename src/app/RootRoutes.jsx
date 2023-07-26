@@ -7,6 +7,7 @@ import administrativeUnitRoutes from "./views/AdministrativeUnit/AdministrativeU
 import UserRoutes from "./views/User/UserRoutes";
 import PersonnelRoutes from "./views/Personnel/PersonnelRoutes";
 import EmployeeRoutes from "./views/Employee/EmployeeRoutes";
+import AddressRoutes from "./views/Address/AddressRoutes";
 import departmentRoutes from "./views/Department/DepartmentRoutes";
 import ConstantList from "./appConfig";
 // import MenuRoutes from "./views/Menus/MenuRoutes";
@@ -43,6 +44,7 @@ const routes = [
   ...UserRoutes,
   ...PersonnelRoutes,
   ...EmployeeRoutes,
+  ...AddressRoutes,
   ...ShiftWorkRouters,
   ...ColorRoutes,
   ...CategoryRoutes,

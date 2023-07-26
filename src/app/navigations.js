@@ -52,13 +52,13 @@ export const navigations = [
       {
         name: "Nhân viên",
         isVisible: true,
-        path: ConstantList.ROOT_PATH + "user_manager/employee",
+        path: ConstantList.ROOT_PATH + "employee_manager/employee",
         icon: "keyboard_arrow_right",
       },
       {
-        name: "Personnel",
+        name: "Địa chỉ",
         isVisible: true,
-        path: ConstantList.ROOT_PATH + "dashboard/personnel",
+        path: ConstantList.ROOT_PATH + "dashboard/address",
         icon: "keyboard_arrow_right",
       },
     ],
