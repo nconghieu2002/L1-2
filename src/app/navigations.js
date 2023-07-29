@@ -56,7 +56,7 @@ export const navigations = [
         icon: "keyboard_arrow_right",
       },
       {
-        name: "Địa chỉ",
+        name: "Quản lý địa điểm",
         isVisible: true,
         path: ConstantList.ROOT_PATH + "dashboard/address",
         icon: "keyboard_arrow_right",
