@@ -47,6 +47,7 @@ import { saveAs } from "file-saver";
 import { useDispatch, useSelector } from "react-redux";
 import { provinceActions } from "app/redux/actions/ProvinceActions";
 import { forwardRef } from "react";
+import ProvinceEditorDialog from "./ProvinceEditorDialog";
 
 toast.configure({
   autoClose: 1000,
@@ -56,20 +57,11 @@ toast.configure({
 
 function Province() {
   const { t } = useTranslation();
-
-  const [showModal, setShowModal] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
-  const [selectedData, setSelectedData] = useState({});
-  const [reloadData, setReloadData] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-
   const dispatch = useDispatch();
-  const provinces = useSelector((state) => state.province.provinces);
 
-  // useEffect(() => {
-  //   dispatch(searchProvinces({ keyword: searchValue }));
-  // }, [dispatch, searchValue]);
+  const [openDialogProvince, setOpenDialogProvince] = useState(false);
+
+  const provinces = useSelector((state) => state.province.provinces);
 
   useEffect(() => {
     dispatch(provinceActions.getAll());
@@ -108,12 +100,25 @@ function Province() {
     },
   ];
 
+  const handleCreateProvince = () => {
+    setOpenDialogProvince(true);
+  };
+
+  const handleCloseDialogProvince = () => {
+    setOpenDialogProvince(false);
+  };
+
   return (
     <div className="m-sm-30">
       <Grid lg={4} md={4}>
         <Grid container spacing={3}>
           <Grid item lg={7} md={7} sm={12} xs={12}>
-            <Button className="mb-16 mr-16" variant="contained" color="primary">
+            <Button
+              onClick={handleCreateProvince}
+              className="mb-16 mr-16"
+              variant="contained"
+              color="primary"
+            >
               {t("Add")}
             </Button>
           </Grid>
@@ -170,14 +175,14 @@ function Province() {
         </Grid>
       </Grid>
 
-      {/* {openDialogEmployee && (
-        <EmployeeEditorDialog
-          open={openDialogEmployee}
-          onClose={handleCLoseDialogEmployee}
-          handleChangeEmployee={handleChangeEmployee}
-          editEmployee={editEmployee}
+      {openDialogProvince && (
+        <ProvinceEditorDialog
+          open={openDialogProvince}
+          close={handleCloseDialogProvince}
+          // handleChangeEmployee={handleChangeEmployee}
+          // editEmployee={editEmployee}
         />
-      )} */}
+      )}
     </div>
   );
   // });

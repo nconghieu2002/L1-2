@@ -129,7 +129,7 @@ const Employee = () => {
     setPage(0);
   };
 
-  const handleAddEmployee = () => {
+  const handleCreateEmployee = () => {
     setEditEmployee({});
     setOpenDialogEmployee(true);
   };
@@ -164,7 +164,7 @@ const Employee = () => {
             className="mb-16 mr-16"
             variant="contained"
             color="primary"
-            onClick={handleAddEmployee}
+            onClick={handleCreateEmployee}
           >
             {t("Add")}
           </Button>
@@ -198,7 +198,6 @@ const Employee = () => {
           />
         </Grid>
       </Grid>
-
       <Grid item xs={12}>
         <MaterialTable
           data={listEmployees.slice(
@@ -240,7 +239,6 @@ const Employee = () => {
           labelRowsPerPage={t("general.rows_per_page")}
         />
       </Grid>
-
       {openDialogEmployee && (
         <EmployeeEditorDialog
           open={openDialogEmployee}
