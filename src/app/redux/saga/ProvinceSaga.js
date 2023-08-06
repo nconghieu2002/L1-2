@@ -24,39 +24,29 @@ function* getProvinces() {
 
 function* createProvince(action) {
   try {
-    const response = yield call(provinceApi.create(action.payload));
+    const response = yield call(provinceApi.create, action.payload);
     yield put({ type: PROVINCES.CREATE_SUCCESS, payload: response.data });
+    toast.success("Thêm tỉnh thành công");
   } catch (error) {
     yield put({ type: PROVINCES.CREATE_ERROR, payload: error });
+    toast.error("Thêm tỉnh không thành công");
   }
 }
 
-// function* addProvince(action) {
-//   try {
-//     const response = yield call(
-//       axios.post,
-//       `${API_PATH}/api/provinces`,
-//       action.payload
-//     );
-//     yield put(addProvinceSuccess(response.data));
-//     toast.success("Thêm tỉnh thành công");
-//   } catch (error) {
-//     yield put(addProvinceFailure(error));
-//     toast.error("Thêm tỉnh không thành công");
-//   }
-// }
+function* deleteProvince(action) {
+  try {
+    const response = yield call(provinceApi.deleteById, action.payload);
+    yield put({ type: PROVINCES.DELETE_SUCCESS, payload: response.id });
+  } catch (error) {
+    yield put({ type: PROVINCES.DELETE_ERROR, payload: error });
+  }
+}
 
-// function* getProvinceDetail(action) {
-//   try {
-//     const response = yield call(
-//       axios.get,
-//       `${API_PATH}/api/provinces/${action.payload}/detail`
-//     );
-//     yield put(getProvinceDetailSuccess(response.data));
-//   } catch (error) {
-//     yield put(getProvinceDetailFailure(error));
-//   }
-// }
+export default function* ProvinceSaga() {
+  yield takeEvery(PROVINCES.GET_ALL, getProvinces);
+  yield takeEvery(PROVINCES.CREATE, createProvince);
+  yield takeEvery(PROVINCES.DELETE, deleteProvince);
+}
 
 // function* searchProvinces(action) {
 //   try {
@@ -68,21 +58,6 @@ function* createProvince(action) {
 //     yield put(searchProvincesSuccess(response.data));
 //   } catch (error) {
 //     yield put(searchProvincesFailure(error));
-//   }
-// }
-
-// function* addProvince(action) {
-//   try {
-//     const response = yield call(
-//       axios.post,
-//       `${API_PATH}/api/provinces`,
-//       action.payload
-//     );
-//     yield put(addProvinceSuccess(response.data));
-//     toast.success("Thêm tỉnh thành công");
-//   } catch (error) {
-//     yield put(addProvinceFailure(error));
-//     toast.error("Thêm tỉnh không thành công");
 //   }
 // }
 
@@ -111,13 +86,3 @@ function* createProvince(action) {
 //     toast.error("Sửa tỉnh không thành công");
 //   }
 // }
-
-export default function* ProvinceSaga() {
-  yield takeEvery(PROVINCES.GET_ALL, getProvinces);
-  yield takeEvery(PROVINCES.GET_ALL, createProvince);
-  // yield takeEvery(GET_PROVINCE_DETAIL, getProvinceDetail);
-  // yield takeEvery(SEARCH_PROVINCES, searchProvinces);
-  // yield takeEvery(ADD_PROVINCE, addProvince);
-  // yield takeEvery(DELETE_PROVINCE, deleteProvince);
-  // yield takeEvery(UPDATE_PROVINCE, updateProvince);
-}

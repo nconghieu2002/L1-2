@@ -148,6 +148,7 @@
     "invalidDateFormat": "Định dạng ngày tháng không hợp lệ",
 
     "errorMessages_required": "Vui lòng không để trống",
+    "errorMessages_number": "Ký tự phải là chữ số",
     "errorMessages_email_valid": "Email không đúng định dạng",
     "errorMessages_age": "Tuổi phải là số và không được âm!",
     "errorMessages_phone": "Số điện thoại không hợp lệ",

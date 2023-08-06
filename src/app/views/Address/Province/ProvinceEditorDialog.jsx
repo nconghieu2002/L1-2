@@ -33,6 +33,8 @@ import DateFnsUtils from "@date-io/date-fns";
 import { toast } from "react-toastify";
 
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { provinceActions } from "app/redux/actions/ProvinceActions";
 
 function PaperComponent(props) {
   return (
@@ -47,8 +49,28 @@ function PaperComponent(props) {
 
 const ProvinceEditorDialog = ({ open, close }) => {
   const { t } = useTranslation();
-
   const formRef = useRef(null);
+
+  const [province, setProvince] = useState({
+    name: "",
+    code: "",
+    area: "",
+  });
+
+  const dispatch = useDispatch();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setProvince((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    dispatch(provinceActions.create(province));
+    close();
+  };
 
   return (
     <div>
@@ -73,7 +95,7 @@ const ProvinceEditorDialog = ({ open, close }) => {
         </DialogTitle>
         <ValidatorForm
           ref={formRef}
-          //   onSubmit={handleFormSubmit}
+          onSubmit={handleSubmit}
           style={{
             overflowY: "auto",
             display: "flex",
@@ -92,12 +114,30 @@ const ProvinceEditorDialog = ({ open, close }) => {
                     </span>
                   }
                   type="text"
+                  name="name"
+                  value={province.name}
+                  onChange={handleChange}
+                  validators={["required"]}
+                  errorMessages={[t("general.errorMessages_required")]}
+                  variant="outlined"
+                  size="small"
+                />
+              </Grid>
+              <Grid item lg={12} md={12} sm={12} xs={12}>
+                <TextValidator
+                  className="w-100"
+                  label={
+                    <span className="font">
+                      <span style={{ color: "red" }}> * </span>
+                      {t("Mã tỉnh/thành phố")}
+                    </span>
+                  }
+                  type="text"
                   name="code"
-                  validators={["required", "matchRegexp:^.{6,10}$"]}
-                  errorMessages={[
-                    t("general.errorMessages_required"),
-                    t("general.errorMessages_code_valid"),
-                  ]}
+                  value={province.code}
+                  onChange={handleChange}
+                  validators={["required"]}
+                  errorMessages={[t("general.errorMessages_required")]}
                   variant="outlined"
                   size="small"
                 />
@@ -112,9 +152,14 @@ const ProvinceEditorDialog = ({ open, close }) => {
                     </span>
                   }
                   type="text"
-                  name="name"
-                  validators={["required"]}
-                  errorMessages={[t("general.errorMessages_required")]}
+                  name="area"
+                  value={province.area}
+                  onChange={handleChange}
+                  validators={["required", "matchRegexp:^\\d+$"]}
+                  errorMessages={[
+                    t("general.errorMessages_required"),
+                    t("general.errorMessages_number"),
+                  ]}
                   variant="outlined"
                   size="small"
                 />

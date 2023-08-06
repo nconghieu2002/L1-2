@@ -60,12 +60,14 @@ function Province() {
   const dispatch = useDispatch();
 
   const [openDialogProvince, setOpenDialogProvince] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   const provinces = useSelector((state) => state.province.provinces);
 
   useEffect(() => {
     dispatch(provinceActions.getAll());
-  }, []);
+    setDeleteSuccess(false);
+  }, [deleteSuccess]);
 
   const columns = [
     {
@@ -79,7 +81,7 @@ function Province() {
             <IconButton>
               <Icon color="primary">edit</Icon>
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => handleDeleteProvince(data.id)}>
               <Icon style={{ color: "red" }}>delete</Icon>
             </IconButton>
           </div>
@@ -88,13 +90,13 @@ function Province() {
     },
     {
       title: t("Tinh"),
-      field: "code",
+      field: "name",
       align: "left",
       width: "5%",
     },
     {
       title: t("Dien tich"),
-      field: "name",
+      field: "area",
       align: "left",
       width: "5%",
     },
@@ -106,6 +108,12 @@ function Province() {
 
   const handleCloseDialogProvince = () => {
     setOpenDialogProvince(false);
+  };
+
+  const handleDeleteProvince = (id) => {
+    dispatch(provinceActions.delete(id));
+    setDeleteSuccess(true);
+    console.log(id);
   };
 
   return (
