@@ -47,9 +47,10 @@ function PaperComponent(props) {
   );
 }
 
-const ProvinceEditorDialog = ({ open, close }) => {
+const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
+  const dispatch = useDispatch();
 
   const [province, setProvince] = useState({
     name: "",
@@ -57,7 +58,11 @@ const ProvinceEditorDialog = ({ open, close }) => {
     area: "",
   });
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (updateProvince) {
+      setProvince(updateProvince);
+    }
+  }, [updateProvince]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -68,7 +73,11 @@ const ProvinceEditorDialog = ({ open, close }) => {
   };
 
   const handleSubmit = () => {
-    dispatch(provinceActions.create(province));
+    if (isUpdating) {
+      dispatch(provinceActions.update(province));
+    } else {
+      dispatch(provinceActions.create(province));
+    }
     close();
   };
 

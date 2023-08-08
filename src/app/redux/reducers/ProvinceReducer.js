@@ -39,7 +39,7 @@ function provinceReducer(state = initialState, action) {
     case PROVINCES.CREATE_SUCCESS:
       return {
         ...state,
-        provinces: [...state.provinces, action.payload.data], // Thêm mới tỉnh/thành phố vào danh sách cũ
+        provinces: [...state.provinces, action.payload.data],
         loading: false,
       };
     case PROVINCES.CREATE_ERROR:
@@ -59,12 +59,32 @@ function provinceReducer(state = initialState, action) {
     case PROVINCES.DELETE_SUCCESS:
       return {
         ...state,
-        provinces: [
-          ...state.provinces.filter((item) => item.id !== action.payload.id),
-        ],
+        provinces: state.provinces.filter((item) => item.id !== action.payload),
         loading: false,
       };
     case PROVINCES.DELETE_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    //Update province
+    case PROVINCES.UPDATE:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case PROVINCES.UPDATE_SUCCESS:
+      return {
+        ...state,
+        provinces: state.provinces.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        ),
+        loading: false,
+      };
+    case PROVINCES.UPDATE_ERROR:
       return {
         ...state,
         loading: false,

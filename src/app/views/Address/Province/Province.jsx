@@ -1,52 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Breadcrumb, ConfirmationDialog } from "egret";
+import { useDispatch, useSelector } from "react-redux";
+import { ConfirmationDialog } from "egret";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import {
   Grid,
   IconButton,
   Icon,
   Button,
-  TextField,
   InputAdornment,
   Input,
-  MuiThemeProvider,
-  TableHead,
-  TableCell,
-  TableRow,
-  Checkbox,
-  TablePagination,
-  Dialog,
-  InputLabel,
-  FormControl,
-  MenuItem,
-  Select,
-  DialogActions,
   Link,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import MaterialTable from "material-table";
 
-import MaterialTable, {
-  MTableToolbar,
-  Chip,
-  MTableBody,
-  MTableHeader,
-} from "material-table";
-import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Draggable from "react-draggable";
-import Paper from "@material-ui/core/Paper";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { toast } from "react-toastify";
-import { saveAs } from "file-saver";
-import { useDispatch, useSelector } from "react-redux";
 import { provinceActions } from "app/redux/actions/ProvinceActions";
-import { forwardRef } from "react";
 import ProvinceEditorDialog from "./ProvinceEditorDialog";
 
 toast.configure({
@@ -60,14 +29,22 @@ function Province() {
   const dispatch = useDispatch();
 
   const [openDialogProvince, setOpenDialogProvince] = useState(false);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [updateProvince, setUpdateProvince] = useState({});
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState("");
 
   const provinces = useSelector((state) => state.province.provinces);
 
   useEffect(() => {
     dispatch(provinceActions.getAll());
-    setDeleteSuccess(false);
-  }, [deleteSuccess]);
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(provinceActions.search());
+
+  // })
 
   const columns = [
     {
@@ -78,7 +55,7 @@ function Province() {
       render: (data) => {
         return (
           <div>
-            <IconButton>
+            <IconButton onClick={() => handleUpdateProvince(data)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
             <IconButton onClick={() => handleDeleteProvince(data.id)}>
@@ -103,6 +80,8 @@ function Province() {
   ];
 
   const handleCreateProvince = () => {
+    setUpdateProvince({});
+    setIsUpdating(false);
     setOpenDialogProvince(true);
   };
 
@@ -111,9 +90,24 @@ function Province() {
   };
 
   const handleDeleteProvince = (id) => {
-    dispatch(provinceActions.delete(id));
-    setDeleteSuccess(true);
-    console.log(id);
+    setOpenDialogDelete(true);
+    setDeleteId(id);
+  };
+
+  const confirmDelete = () => {
+    console.log(deleteId);
+    dispatch(provinceActions.delete(deleteId));
+    setOpenDialogDelete(false);
+  };
+
+  const handleDialogCLose = () => {
+    setOpenDialogDelete(false);
+  };
+
+  const handleUpdateProvince = (data) => {
+    setUpdateProvince(data);
+    setIsUpdating(true);
+    setOpenDialogProvince(true);
   };
 
   return (
@@ -135,6 +129,8 @@ function Province() {
               label={t("EnterSearch")}
               type="text"
               name="keyword"
+              value={searchInputValue}
+              onChange={(e) => setSearchInputValue(e.target.value)}
               className="w-100 mb-16 mr-10 stylePlaceholder"
               id="search_box"
               placeholder={t("Tìm kiếm")}
@@ -183,12 +179,24 @@ function Province() {
         </Grid>
       </Grid>
 
+      {openDialogDelete && (
+        <ConfirmationDialog
+          title={"Xóa tỉnh"}
+          open={openDialogDelete}
+          onYesClick={confirmDelete}
+          onConfirmDialogClose={handleDialogCLose}
+          text={"Bạn có đồng ý xóa tỉnh này không"}
+          Yes="Đồng ý"
+          No="Không"
+        />
+      )}
+
       {openDialogProvince && (
         <ProvinceEditorDialog
           open={openDialogProvince}
           close={handleCloseDialogProvince}
-          // handleChangeEmployee={handleChangeEmployee}
-          // editEmployee={editEmployee}
+          updateProvince={updateProvince}
+          isUpdating={isUpdating}
         />
       )}
     </div>

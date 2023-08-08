@@ -36,9 +36,23 @@ function* createProvince(action) {
 function* deleteProvince(action) {
   try {
     const response = yield call(provinceApi.deleteById, action.payload);
-    yield put({ type: PROVINCES.DELETE_SUCCESS, payload: response.id });
+    yield put({ type: PROVINCES.DELETE_SUCCESS, payload: action.payload });
+    toast.success("Xóa tỉnh thành công");
   } catch (error) {
     yield put({ type: PROVINCES.DELETE_ERROR, payload: error });
+    toast.error("Xóa tỉnh không thành công");
+  }
+}
+
+function* updateProvince(action) {
+  try {
+    const response = yield call(provinceApi.update, action.payload);
+    yield put({ type: PROVINCES.UPDATE_SUCCESS, payload: response.data });
+    yield put({ type: PROVINCES.GET_ALL });
+    toast.success("Sửa tỉnh thành công");
+  } catch (error) {
+    yield put({ type: PROVINCES.UPDATE_ERROR, payload: error });
+    toast.error("Sửa tỉnh không thành công");
   }
 }
 
@@ -46,43 +60,5 @@ export default function* ProvinceSaga() {
   yield takeEvery(PROVINCES.GET_ALL, getProvinces);
   yield takeEvery(PROVINCES.CREATE, createProvince);
   yield takeEvery(PROVINCES.DELETE, deleteProvince);
+  yield takeEvery(PROVINCES.UPDATE, updateProvince);
 }
-
-// function* searchProvinces(action) {
-//   try {
-//     const response = yield call(
-//       axios.post,
-//       `${API_PATH}/api/provinces/page`,
-//       action.payload
-//     );
-//     yield put(searchProvincesSuccess(response.data));
-//   } catch (error) {
-//     yield put(searchProvincesFailure(error));
-//   }
-// }
-
-// function* deleteProvince(action) {
-//   try {
-//     yield call(axios.delete, `${API_PATH}/api/provinces/${action.payload}`);
-//     yield put(deleteProvinceSuccess(action.payload));
-//     toast.success("Xóa tỉnh thành công");
-//   } catch (error) {
-//     yield put(deleteProvinceFailure(error));
-//     toast.error("Xóa tỉnh không thành công");
-//   }
-// }
-
-// function* updateProvince(action) {
-//   try {
-//     const response = yield call(
-//       axios.put,
-//       `${API_PATH}/api/provinces/${action.payload.id}`,
-//       action.payload
-//     );
-//     yield put(updateProvinceSuccess(response.data.data));
-//     toast.success("Sửa tỉnh thành công");
-//   } catch (error) {
-//     yield put(updateProvinceFailure(error));
-//     toast.error("Sửa tỉnh không thành công");
-//   }
-// }
