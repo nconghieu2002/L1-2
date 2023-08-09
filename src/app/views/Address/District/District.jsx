@@ -15,8 +15,8 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import MaterialTable from "material-table";
 
-import { provinceActions } from "app/redux/actions/ProvinceActions";
-import ProvinceEditorDialog from "./ProvinceEditorDialog";
+import { districtActions } from "app/redux/actions/DistrictActions";
+import DistrictEditorDialog from "./DistrictEditorDialog";
 
 toast.configure({
   autoClose: 1000,
@@ -24,25 +24,25 @@ toast.configure({
   limit: 3,
 });
 
-function Province() {
+function District() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [openDialogProvince, setOpenDialogProvince] = useState(false);
+  const [openDialogDistrict, setOpenDialogDistrict] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [updateProvince, setUpdateProvince] = useState({});
+  const [updateDistrict, setUpdateDistrict] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
 
-  const provinces = useSelector((state) => state.province.provinces);
+  const districts = useSelector((state) => state.district.districts);
 
   useEffect(() => {
-    dispatch(provinceActions.getAll());
+    dispatch(districtActions.getAll());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(provinceActions.search({ keyword: searchInputValue }));
+    dispatch(districtActions.search({ keyword: searchInputValue }));
   }, [dispatch, searchInputValue]);
 
   const columns = [
@@ -54,10 +54,10 @@ function Province() {
       render: (data) => {
         return (
           <div>
-            <IconButton onClick={() => handleUpdateProvince(data)}>
+            <IconButton onClick={() => handleUpdateDistrict(data)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
-            <IconButton onClick={() => handleDeleteProvince(data.id)}>
+            <IconButton onClick={() => handleDeleteDistrict(data.id)}>
               <Icon style={{ color: "red" }}>delete</Icon>
             </IconButton>
           </div>
@@ -78,24 +78,24 @@ function Province() {
     },
   ];
 
-  const handleCreateProvince = () => {
-    setUpdateProvince({});
+  const handleCreateDistrict = () => {
+    setUpdateDistrict({});
     setIsUpdating(false);
-    setOpenDialogProvince(true);
+    setOpenDialogDistrict(true);
   };
 
-  const handleCloseDialogProvince = () => {
-    setOpenDialogProvince(false);
+  const handleCloseDialogDistrict = () => {
+    setOpenDialogDistrict(false);
   };
 
-  const handleDeleteProvince = (id) => {
+  const handleDeleteDistrict = (id) => {
     setOpenDialogDelete(true);
     setDeleteId(id);
   };
 
   const confirmDelete = () => {
     console.log(deleteId);
-    dispatch(provinceActions.delete(deleteId));
+    dispatch(districtActions.delete(deleteId));
     setOpenDialogDelete(false);
   };
 
@@ -103,10 +103,10 @@ function Province() {
     setOpenDialogDelete(false);
   };
 
-  const handleUpdateProvince = (data) => {
-    setUpdateProvince(data);
+  const handleUpdateDistrict = (data) => {
+    setUpdateDistrict(data);
     setIsUpdating(true);
-    setOpenDialogProvince(true);
+    setOpenDialogDistrict(true);
   };
 
   return (
@@ -115,7 +115,7 @@ function Province() {
         <Grid container spacing={3}>
           <Grid item lg={7} md={7} sm={12} xs={12}>
             <Button
-              onClick={handleCreateProvince}
+              onClick={handleCreateDistrict}
               className="mb-16 mr-16"
               variant="contained"
               color="primary"
@@ -151,7 +151,7 @@ function Province() {
         </Grid>
         <Grid item xs={12}>
           <MaterialTable
-            data={provinces || []}
+            data={districts || []}
             columns={columns}
             options={{
               selection: false,
@@ -180,21 +180,21 @@ function Province() {
 
       {openDialogDelete && (
         <ConfirmationDialog
-          title={"Xóa tỉnh"}
+          title={"Xóa huyện"}
           open={openDialogDelete}
           onYesClick={confirmDelete}
           onConfirmDialogClose={handleDialogCLose}
-          text={"Bạn có đồng ý xóa tỉnh này không"}
+          text={"Bạn có đồng ý xóa huyện này không"}
           Yes="Đồng ý"
           No="Không"
         />
       )}
 
-      {openDialogProvince && (
-        <ProvinceEditorDialog
-          open={openDialogProvince}
-          close={handleCloseDialogProvince}
-          updateProvince={updateProvince}
+      {openDialogDistrict && (
+        <DistrictEditorDialog
+          open={openDialogDistrict}
+          close={handleCloseDialogDistrict}
+          updateDistrict={updateDistrict}
           isUpdating={isUpdating}
         />
       )}
@@ -202,4 +202,4 @@ function Province() {
   );
   // });
 }
-export default Province;
+export default District;

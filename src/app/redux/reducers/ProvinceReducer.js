@@ -91,6 +91,26 @@ function provinceReducer(state = initialState, action) {
         error: action.payload,
       };
 
+    //Search province
+    case PROVINCES.SEARCH:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case PROVINCES.SEARCH_SUCCESS:
+      return {
+        ...state,
+        provinces: action.payload.data.content,
+        loading: false,
+      };
+    case PROVINCES.SEARCH_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
     default:
       return state;
   }

@@ -14,7 +14,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 
-import { provinceActions } from "app/redux/actions/ProvinceActions";
+import { districtActions } from "app/redux/actions/DistrictActions";
 import DialogContent from "@material-ui/core/DialogContent";
 
 function PaperComponent(props) {
@@ -28,26 +28,26 @@ function PaperComponent(props) {
   );
 }
 
-const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
+const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const dispatch = useDispatch();
 
-  const [province, setProvince] = useState({
+  const [district, setDistrict] = useState({
     name: "",
     code: "",
     area: "",
   });
 
   useEffect(() => {
-    if (updateProvince) {
-      setProvince(updateProvince);
+    if (updateDistrict) {
+      setDistrict(updateDistrict);
     }
-  }, [updateProvince]);
+  }, [updateDistrict]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setProvince((prevState) => ({
+    setDistrict((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -55,9 +55,9 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
 
   const handleSubmit = () => {
     if (isUpdating) {
-      dispatch(provinceActions.update(province));
+      dispatch(districtActions.update(district));
     } else {
-      dispatch(provinceActions.create(province));
+      dispatch(districtActions.create(district));
     }
     close();
   };
@@ -105,7 +105,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
                   }
                   type="text"
                   name="name"
-                  value={province.name}
+                  value={district.name}
                   onChange={handleChange}
                   validators={["required"]}
                   errorMessages={[t("general.errorMessages_required")]}
@@ -124,7 +124,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
                   }
                   type="text"
                   name="code"
-                  value={province.code}
+                  value={district.code}
                   onChange={handleChange}
                   validators={["required"]}
                   errorMessages={[t("general.errorMessages_required")]}
@@ -143,7 +143,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
                   }
                   type="text"
                   name="area"
-                  value={province.area}
+                  value={district.area}
                   onChange={handleChange}
                   validators={["required", "matchRegexp:^\\d+$"]}
                   errorMessages={[
@@ -176,4 +176,4 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
   );
 };
 
-export default ProvinceEditorDialog;
+export default DistrictEditorDialog;

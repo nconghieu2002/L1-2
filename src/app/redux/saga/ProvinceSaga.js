@@ -1,11 +1,9 @@
-import { call, put, takeEvery } from "redux-saga/effects";
-import axios from "axios";
-import { PROVINCES } from "../actions/ProvinceActions";
-
-import ConstantList from "../../appConfig";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { call, put, takeEvery } from "redux-saga/effects";
+import { toast } from "react-toastify";
+
 import { provinceApi } from "../../views/Address/Province/ProvinceService";
+import { PROVINCES } from "../actions/ProvinceActions";
 
 toast.configure({
   autoClose: 1000,
@@ -56,9 +54,19 @@ function* updateProvince(action) {
   }
 }
 
+function* searchProvince(action) {
+  try {
+    const response = yield call(provinceApi.search, action.payload);
+    yield put({ type: PROVINCES.SEARCH_SUCCESS, payload: response.data });
+  } catch (error) {
+    yield put({ type: PROVINCES.SEARCH_ERROR, payload: error });
+  }
+}
+
 export default function* ProvinceSaga() {
   yield takeEvery(PROVINCES.GET_ALL, getProvinces);
   yield takeEvery(PROVINCES.CREATE, createProvince);
   yield takeEvery(PROVINCES.DELETE, deleteProvince);
   yield takeEvery(PROVINCES.UPDATE, updateProvince);
+  yield takeEvery(PROVINCES.SEARCH, searchProvince);
 }
