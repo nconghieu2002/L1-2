@@ -35,7 +35,7 @@ function Province() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
 
-  const provinces = useSelector((state) => state.province.provinces);
+  const { provinces } = useSelector((state) => state.province);
 
   useEffect(() => {
     dispatch(provinceActions.getAll());
@@ -110,8 +110,8 @@ function Province() {
   };
 
   return (
-    <div className="m-sm-30">
-      <Grid lg={4} md={4}>
+    <div>
+      <Grid>
         <Grid container spacing={3}>
           <Grid item lg={7} md={7} sm={12} xs={12}>
             <Button
@@ -200,6 +200,5 @@ function Province() {
       )}
     </div>
   );
-  // });
 }
 export default Province;

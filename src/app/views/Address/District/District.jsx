@@ -35,7 +35,7 @@ function District() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
 
-  const districts = useSelector((state) => state.district.districts);
+  const { districts } = useSelector((state) => state.district);
 
   useEffect(() => {
     dispatch(districtActions.getAll());
@@ -65,7 +65,7 @@ function District() {
       },
     },
     {
-      title: t("Tinh"),
+      title: t("Huyện"),
       field: "name",
       align: "left",
       width: "5%",
@@ -110,8 +110,8 @@ function District() {
   };
 
   return (
-    <div className="m-sm-30">
-      <Grid lg={4} md={4}>
+    <div>
+      <Grid>
         <Grid container spacing={3}>
           <Grid item lg={7} md={7} sm={12} xs={12}>
             <Button
@@ -200,6 +200,5 @@ function District() {
       )}
     </div>
   );
-  // });
 }
 export default District;
