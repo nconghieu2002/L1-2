@@ -39,26 +39,31 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
 
   const { provinces } = useSelector((state) => state.province);
 
-  const [district, setDistrict] = useState({
-    name: "",
-    code: "",
-    area: "",
-  });
+  const [district, setDistrict] = useState(null);
 
   useEffect(() => {
     if (updateDistrict) {
       setDistrict(updateDistrict);
     }
-
-    console.log(provinces);
   }, [updateDistrict]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setDistrict((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+
+    if (name === "provinceDto") {
+      setDistrict({
+        ...district,
+        provinceDto: { id: value },
+      });
+      console.log(district);
+    } else {
+      setDistrict({
+        ...district,
+        [name]: value,
+      });
+    }
+
+    console.log(district);
   };
 
   const handleSubmit = () => {
@@ -68,6 +73,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
       dispatch(districtActions.create(district));
     }
     close();
+    console.log(district);
   };
 
   return (
@@ -112,9 +118,9 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                   </InputLabel>
                   <Select
                     id="province-select"
-                    // onChange={handleChange}
-                    name="province"
-                    // value={province.name}
+                    onChange={handleChange}
+                    name="provinceDto"
+                    // value={district?.provinceDto?.id || ""}
                   >
                     {provinces?.map((province) => (
                       <MenuItem key={province.id} value={province.id}>
@@ -135,7 +141,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                   }
                   type="text"
                   name="name"
-                  value={district.name}
+                  value={district?.name || ""}
                   onChange={handleChange}
                   validators={["required"]}
                   errorMessages={[t("general.errorMessages_required")]}
@@ -154,7 +160,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                   }
                   type="text"
                   name="code"
-                  value={district.code}
+                  value={district?.code || ""}
                   onChange={handleChange}
                   validators={["required"]}
                   errorMessages={[t("general.errorMessages_required")]}
@@ -173,7 +179,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                   }
                   type="text"
                   name="area"
-                  value={district.area}
+                  value={district?.area || ""}
                   onChange={handleChange}
                   validators={["required", "matchRegexp:^\\d+$"]}
                   errorMessages={[

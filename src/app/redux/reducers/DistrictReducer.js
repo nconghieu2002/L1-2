@@ -29,7 +29,7 @@ function districtReducer(state = initialState, action) {
         error: action.payload,
       };
 
-    // Create province
+    // Create district
     case DISTRICTS.CREATE:
       return {
         ...state,
@@ -49,7 +49,7 @@ function districtReducer(state = initialState, action) {
         error: action.payload,
       };
 
-    //Delete province
+    //Delete district
     case DISTRICTS.DELETE:
       return {
         ...state,
@@ -69,7 +69,7 @@ function districtReducer(state = initialState, action) {
         error: action.payload,
       };
 
-    //Update province
+    //Update district
     case DISTRICTS.UPDATE:
       return {
         ...state,
@@ -91,7 +91,7 @@ function districtReducer(state = initialState, action) {
         error: action.payload,
       };
 
-    //Search province
+    //Search district
     case DISTRICTS.SEARCH:
       return {
         ...state,
