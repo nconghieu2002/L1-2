@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import Province from "./Province/Province";
 import District from "./District/District";
+import Ward from "./Ward/Ward";
 
 toast.configure({
   autoClose: 1000,
@@ -26,12 +27,15 @@ const Address = () => {
           ]}
         />
       </div>
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         <Grid item lg={4}>
           <Province />
         </Grid>
         <Grid item lg={4}>
           <District />
+        </Grid>
+        <Grid item lg={4}>
+          <Ward />
         </Grid>
       </Grid>
     </div>

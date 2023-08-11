@@ -2,7 +2,6 @@ import { PROVINCES } from "../actions/ProvinceActions";
 
 const initialState = {
   provinces: [],
-  province: null,
   loading: false,
   error: null,
 };

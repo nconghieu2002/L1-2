@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ConfirmationDialog } from "egret";
 import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
 import {
   Grid,
   IconButton,
@@ -18,15 +17,11 @@ import MaterialTable from "material-table";
 import { provinceActions } from "app/redux/actions/ProvinceActions";
 import ProvinceEditorDialog from "./ProvinceEditorDialog";
 
-toast.configure({
-  autoClose: 1000,
-  draggable: false,
-  limit: 3,
-});
-
 function Province() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const { provinces } = useSelector((state) => state.province);
 
   const [openDialogProvince, setOpenDialogProvince] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
@@ -34,8 +29,6 @@ function Province() {
   const [updateProvince, setUpdateProvince] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-
-  const { provinces } = useSelector((state) => state.province);
 
   useEffect(() => {
     dispatch(provinceActions.getAll());
@@ -50,7 +43,7 @@ function Province() {
       title: t("Action"),
       field: "custom",
       align: "center",
-      width: "4%",
+      width: "5%",
       render: (data) => {
         return (
           <div>
@@ -65,13 +58,13 @@ function Province() {
       },
     },
     {
-      title: t("Tinh"),
+      title: t("Tỉnh"),
       field: "name",
       align: "left",
       width: "5%",
     },
     {
-      title: t("Dien tich"),
+      title: t("Diện tích"),
       field: "area",
       align: "left",
       width: "5%",

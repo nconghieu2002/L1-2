@@ -1,109 +1,109 @@
-import { DISTRICTS } from "../actions/DistrictActions";
+import { WARDS } from "../actions/WardActions";
 
 const initialState = {
-  districts: [],
+  wards: [],
   loading: false,
   error: null,
 };
 
-function districtReducer(state = initialState, action) {
+function wardReducer(state = initialState, action) {
   switch (action.type) {
-    // Get DISTRICTS
-    case DISTRICTS.GET_ALL:
+    // Get WARDS
+    case WARDS.GET_ALL:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.GET_ALL_SUCCESS:
+    case WARDS.GET_ALL_SUCCESS:
       return {
         ...state,
-        districts: action.payload.data,
+        wards: action.payload.data,
         loading: false,
       };
-    case DISTRICTS.GET_ALL_ERROR:
+    case WARDS.GET_ALL_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    // Create district
-    case DISTRICTS.CREATE:
+    // Create ward
+    case WARDS.CREATE:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.CREATE_SUCCESS:
+    case WARDS.CREATE_SUCCESS:
       return {
         ...state,
-        districts: [...state.districts, action.payload.data],
+        wards: [...state.wards, action.payload.data],
         loading: false,
       };
-    case DISTRICTS.CREATE_ERROR:
+    case WARDS.CREATE_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    //Delete district
-    case DISTRICTS.DELETE:
+    //Delete WARD
+    case WARDS.DELETE:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.DELETE_SUCCESS:
+    case WARDS.DELETE_SUCCESS:
       return {
         ...state,
-        districts: state.districts.filter((item) => item.id !== action.payload),
+        wards: state.wards.filter((item) => item.id !== action.payload),
         loading: false,
       };
-    case DISTRICTS.DELETE_ERROR:
+    case WARDS.DELETE_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    //Update district
-    case DISTRICTS.UPDATE:
+    //Update ward
+    case WARDS.UPDATE:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.UPDATE_SUCCESS:
+    case WARDS.UPDATE_SUCCESS:
       return {
         ...state,
-        districts: state.districts.map((item) =>
+        wards: state.wards.map((item) =>
           item.id === action.payload.id ? action.payload : item
         ),
         loading: false,
       };
-    case DISTRICTS.UPDATE_ERROR:
+    case WARDS.UPDATE_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    //Search district
-    case DISTRICTS.SEARCH:
+    //Search ward
+    case WARDS.SEARCH:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.SEARCH_SUCCESS:
+    case WARDS.SEARCH_SUCCESS:
       return {
         ...state,
-        districts: action.payload.data.content,
+        wards: action.payload.data.content,
         loading: false,
       };
-    case DISTRICTS.SEARCH_ERROR:
+    case WARDS.SEARCH_ERROR:
       return {
         ...state,
         loading: false,
@@ -115,4 +115,4 @@ function districtReducer(state = initialState, action) {
   }
 }
 
-export default districtReducer;
+export default wardReducer;

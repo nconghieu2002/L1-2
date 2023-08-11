@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import { Breadcrumb, ConfirmationDialog } from "egret";
 import { useTranslation } from "react-i18next";
 import {
@@ -7,46 +7,30 @@ import {
   IconButton,
   Icon,
   Button,
-  TextField,
   InputAdornment,
   Input,
-  MuiThemeProvider,
-  TableHead,
-  TableCell,
-  TableRow,
-  Checkbox,
   TablePagination,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import SearchIcon from "@material-ui/icons/Search";
-import EmployeeEditorDialog from "./EmployeeEditorDialog";
-import {
-  deleteEmployee,
-  exportEmployee,
-  getAll,
-  searchByPage,
-  saveEmployee,
-} from "./EmployeeService";
-import { toast } from "react-toastify";
-import { saveAs } from "file-saver";
 
-toast.configure({
-  autoClose: 1000,
-  draggable: false,
-  limit: 3,
-});
+import { employeeActions } from "app/redux/actions/EmployeeActions";
+import EmployeeEditorDialog from "./EmployeeEditorDialog";
+import { useDispatch, useSelector } from "react-redux";
 
 const Employee = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { employees } = useSelector((state) => state.employee);
 
-  const [listEmployees, setListEmployees] = useState([]);
+  const [openDialogEmployee, setOpenDialogEmployee] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [updateEmployee, setUpdateEmployee] = useState({});
+  const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openDialogEmployee, setOpenDialogEmployee] = useState(false);
-  const [editEmployee, setEditEmployee] = useState({});
-  const [changeEmployee, setChangeEmployee] = useState(false);
-
   const columns = [
     {
       title: t("Action"),
@@ -56,7 +40,7 @@ const Employee = () => {
       render: (data) => {
         return (
           <div>
-            <IconButton onClick={() => handleEditEmployee(data)}>
+            <IconButton onClick={() => handleUpdateEmployee(data)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
             <IconButton onClick={() => handleDeleteEmployee(data.id)}>
@@ -99,26 +83,12 @@ const Employee = () => {
   ];
 
   useEffect(() => {
-    fetchData();
-  }, [searchInputValue, changeEmployee]);
+    dispatch(employeeActions.getAll());
+  }, [dispatch]);
 
-  const fetchData = async () => {
-    try {
-      const response = await searchByPage({ keyword: searchInputValue });
-      setListEmployees(response?.data?.data?.content);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleDeleteEmployee = async (id) => {
-    try {
-      const response = await deleteEmployee(id);
-      fetchData();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    dispatch(employeeActions.search({ keyword: searchInputValue }));
+  }, [dispatch, searchInputValue]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -130,22 +100,34 @@ const Employee = () => {
   };
 
   const handleCreateEmployee = () => {
-    setEditEmployee({});
+    setUpdateEmployee({});
+    setIsUpdating(false);
     setOpenDialogEmployee(true);
   };
 
-  const handleCLoseDialogEmployee = () => {
+  const handleCloseDialogEmployee = () => {
     setOpenDialogEmployee(false);
   };
 
-  const handleChangeEmployee = () => {
-    setChangeEmployee(!changeEmployee);
+  const handleDeleteEmployee = (id) => {
+    setOpenDialogDelete(true);
+    setDeleteId(id);
   };
 
-  const handleEditEmployee = (data) => {
-    setEditEmployee(data);
+  const confirmDelete = () => {
+    console.log(deleteId);
+    dispatch(employeeActions.delete(deleteId));
+    setOpenDialogDelete(false);
+  };
+
+  const handleDialogCLose = () => {
+    setOpenDialogDelete(false);
+  };
+
+  const handleUpdateEmployee = (data) => {
+    setUpdateEmployee(data);
+    setIsUpdating(true);
     setOpenDialogEmployee(true);
-    console.log(data);
   };
 
   return (
@@ -200,7 +182,7 @@ const Employee = () => {
       </Grid>
       <Grid item xs={12}>
         <MaterialTable
-          data={listEmployees.slice(
+          data={employees.slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage
           )}
@@ -230,7 +212,7 @@ const Employee = () => {
         />
         <TablePagination
           component="div"
-          count={listEmployees.length}
+          count={employees.length}
           page={page}
           rowsPerPage={rowsPerPage}
           onChangePage={handleChangePage}
@@ -239,12 +221,25 @@ const Employee = () => {
           labelRowsPerPage={t("general.rows_per_page")}
         />
       </Grid>
+
+      {openDialogDelete && (
+        <ConfirmationDialog
+          title={"Xóa tỉnh"}
+          open={openDialogDelete}
+          onYesClick={confirmDelete}
+          onConfirmDialogClose={handleDialogCLose}
+          text={"Bạn có đồng ý xóa tỉnh này không"}
+          Yes="Đồng ý"
+          No="Không"
+        />
+      )}
+
       {openDialogEmployee && (
         <EmployeeEditorDialog
           open={openDialogEmployee}
-          onClose={handleCLoseDialogEmployee}
-          handleChangeEmployee={handleChangeEmployee}
-          editEmployee={editEmployee}
+          close={handleCloseDialogEmployee}
+          updateEmployee={updateEmployee}
+          isUpdating={isUpdating}
         />
       )}
     </div>

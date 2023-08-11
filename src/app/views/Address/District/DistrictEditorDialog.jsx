@@ -85,7 +85,13 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
         fullWidth={true}
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          <span className="mb-20 styleColor">{t("Thêm mới huyện")}</span>
+          {isUpdating ? (
+            <span className="mb-20 styleColor">
+              {t("Chỉnh sửa huyện/quận")}
+            </span>
+          ) : (
+            <span className="mb-20 styleColor">{t("Thêm mới huyện/quận")}</span>
+          )}
           <IconButton
             onClick={close}
             style={{ position: "absolute", right: "10px", top: "10px" }}
@@ -106,13 +112,13 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
         >
           <DialogContent style={{ overflow: "hidden" }}>
             <Grid container spacing={2}>
-              <Grid item lg={4} md={4} xs={12} sm={6}>
+              <Grid item lg={12} md={12} sm={12} xs={12}>
                 <FormControl fullWidth={true} variant="outlined" size="small">
                   <InputLabel style={{ backgroundColor: "white" }}>
                     {
                       <span className="font">
                         <span style={{ color: "red" }}> * </span>
-                        {t("Chọn tỉnh")}
+                        {t("Chọn tỉnh/thành phố")}
                       </span>
                     }
                   </InputLabel>
@@ -120,7 +126,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                     id="province-select"
                     onChange={handleChange}
                     name="provinceDto"
-                    // value={district?.provinceDto?.id || ""}
+                    value={district?.provinceDto?.id || ""}
                   >
                     {provinces?.map((province) => (
                       <MenuItem key={province.id} value={province.id}>
@@ -136,7 +142,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                   label={
                     <span className="font">
                       <span style={{ color: "red" }}> * </span>
-                      {t("Tên huyện")}
+                      {t("Tên huyện/quận")}
                     </span>
                   }
                   type="text"
@@ -155,7 +161,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
                   label={
                     <span className="font">
                       <span style={{ color: "red" }}> * </span>
-                      {t("Mã huyện")}
+                      {t("Mã huyện/quận")}
                     </span>
                   }
                   type="text"

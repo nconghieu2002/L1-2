@@ -1,9 +1,8 @@
 import axios from "axios";
-import ConstantList from "../../appConfig";
-const API_PATH = ConstantList.API_ENPOINT + "/api/employees/";
-const API_ADDRESS = ConstantList.API_ENPOINT + "/api/";
+import ConstantList from "../../../appConfig";
+const API_PATH = ConstantList.API_ENPOINT + "/api/wards/";
 
-export const employeeApi = {
+export const wardApi = {
   getAll: () => {
     const url = API_PATH + "all";
     return axios.get(url);
@@ -27,17 +26,5 @@ export const employeeApi = {
   search: (data) => {
     const url = API_PATH + "page";
     return axios.post(url, data);
-  },
-  getProvinces: () => {
-    const url = API_ADDRESS + "provinces/all";
-    return axios.get(url);
-  },
-  getDistrictsByProvince: (id) => {
-    const url = API_ADDRESS + "provinces/" + id + "/districts";
-    return axios.get(url);
-  },
-  getWardsByDistrict: (id) => {
-    const url = API_ADDRESS + "districts/" + id + "/wards";
-    return axios.get(url);
   },
 };

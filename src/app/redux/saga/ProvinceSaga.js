@@ -24,10 +24,10 @@ function* createProvince(action) {
   try {
     const response = yield call(provinceApi.create, action.payload);
     yield put({ type: PROVINCES.CREATE_SUCCESS, payload: response.data });
-    toast.success("Thêm tỉnh thành công");
+    toast.success("Thêm tỉnh/thành phố thành công");
   } catch (error) {
     yield put({ type: PROVINCES.CREATE_ERROR, payload: error });
-    toast.error("Thêm tỉnh không thành công");
+    toast.error("Thêm tỉnh/thành phố không thành công");
   }
 }
 
@@ -35,10 +35,10 @@ function* deleteProvince(action) {
   try {
     const response = yield call(provinceApi.deleteById, action.payload);
     yield put({ type: PROVINCES.DELETE_SUCCESS, payload: action.payload });
-    toast.success("Xóa tỉnh thành công");
+    toast.success("Xóa tỉnh/thành phố thành công");
   } catch (error) {
     yield put({ type: PROVINCES.DELETE_ERROR, payload: error });
-    toast.error("Xóa tỉnh không thành công");
+    toast.error("Xóa tỉnh/thành phố không thành công");
   }
 }
 
@@ -47,10 +47,10 @@ function* updateProvince(action) {
     const response = yield call(provinceApi.update, action.payload);
     yield put({ type: PROVINCES.UPDATE_SUCCESS, payload: response.data });
     yield put({ type: PROVINCES.GET_ALL });
-    toast.success("Sửa tỉnh thành công");
+    toast.success("Sửa tỉnh/thành phố thành công");
   } catch (error) {
     yield put({ type: PROVINCES.UPDATE_ERROR, payload: error });
-    toast.error("Sửa tỉnh không thành công");
+    toast.error("Sửa tỉnh/thành phố không thành công");
   }
 }
 

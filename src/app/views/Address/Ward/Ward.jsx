@@ -14,28 +14,28 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import MaterialTable from "material-table";
 
-import { districtActions } from "app/redux/actions/DistrictActions";
-import DistrictEditorDialog from "./DistrictEditorDialog";
+import { wardActions } from "app/redux/actions/WardActions";
+import WardEditorDialog from "./WardEditorDialog";
 
-function District() {
+function Ward() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const { districts } = useSelector((state) => state.district);
+  const { wards } = useSelector((state) => state.ward);
 
-  const [openDialogDistrict, setOpenDialogDistrict] = useState(false);
+  const [openDialogWard, setOpenDialogWard] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [updateDistrict, setUpdateDistrict] = useState({});
+  const [updateWard, setUpdateWard] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
 
   useEffect(() => {
-    dispatch(districtActions.getAll());
+    dispatch(wardActions.getAll());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(districtActions.search({ keyword: searchInputValue }));
+    dispatch(wardActions.search({ keyword: searchInputValue }));
   }, [dispatch, searchInputValue]);
 
   const columns = [
@@ -47,10 +47,10 @@ function District() {
       render: (data) => {
         return (
           <div>
-            <IconButton onClick={() => handleUpdateDistrict(data)}>
+            <IconButton onClick={() => handleUpdateWard(data)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
-            <IconButton onClick={() => handleDeleteDistrict(data.id)}>
+            <IconButton onClick={() => handleDeleteWard(data.id)}>
               <Icon style={{ color: "red" }}>delete</Icon>
             </IconButton>
           </div>
@@ -58,7 +58,7 @@ function District() {
       },
     },
     {
-      title: t("Huyện"),
+      title: t("Xã"),
       field: "name",
       align: "left",
       width: "5%",
@@ -71,24 +71,24 @@ function District() {
     },
   ];
 
-  const handleCreateDistrict = () => {
-    setUpdateDistrict({});
+  const handleCreateWard = () => {
+    setUpdateWard({});
     setIsUpdating(false);
-    setOpenDialogDistrict(true);
+    setOpenDialogWard(true);
   };
 
-  const handleCloseDialogDistrict = () => {
-    setOpenDialogDistrict(false);
+  const handleCloseDialogWard = () => {
+    setOpenDialogWard(false);
   };
 
-  const handleDeleteDistrict = (id) => {
+  const handleDeleteWard = (id) => {
     setOpenDialogDelete(true);
     setDeleteId(id);
   };
 
   const confirmDelete = () => {
     console.log(deleteId);
-    dispatch(districtActions.delete(deleteId));
+    dispatch(wardActions.delete(deleteId));
     setOpenDialogDelete(false);
   };
 
@@ -96,10 +96,10 @@ function District() {
     setOpenDialogDelete(false);
   };
 
-  const handleUpdateDistrict = (data) => {
-    setUpdateDistrict(data);
+  const handleUpdateWard = (data) => {
+    setUpdateWard(data);
     setIsUpdating(true);
-    setOpenDialogDistrict(true);
+    setOpenDialogWard(true);
   };
 
   return (
@@ -108,7 +108,7 @@ function District() {
         <Grid container spacing={3}>
           <Grid item lg={7} md={7} sm={12} xs={12}>
             <Button
-              onClick={handleCreateDistrict}
+              onClick={handleCreateWard}
               className="mb-16 mr-16"
               variant="contained"
               color="primary"
@@ -144,7 +144,7 @@ function District() {
         </Grid>
         <Grid item xs={12}>
           <MaterialTable
-            data={districts || []}
+            data={wards || []}
             columns={columns}
             options={{
               selection: false,
@@ -183,15 +183,15 @@ function District() {
         />
       )}
 
-      {openDialogDistrict && (
-        <DistrictEditorDialog
-          open={openDialogDistrict}
-          close={handleCloseDialogDistrict}
-          updateDistrict={updateDistrict}
+      {openDialogWard && (
+        <WardEditorDialog
+          open={openDialogWard}
+          close={handleCloseDialogWard}
+          updateWard={updateWard}
           isUpdating={isUpdating}
         />
       )}
     </div>
   );
 }
-export default District;
+export default Ward;

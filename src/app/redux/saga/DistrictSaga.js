@@ -24,10 +24,10 @@ function* createDistrict(action) {
   try {
     const response = yield call(districtApi.create, action.payload);
     yield put({ type: DISTRICTS.CREATE_SUCCESS, payload: response.data });
-    toast.success("Thêm huyện thành công");
+    toast.success("Thêm huyện/quận thành công");
   } catch (error) {
     yield put({ type: DISTRICTS.CREATE_ERROR, payload: error });
-    toast.error("Thêm huyện không thành công");
+    toast.error("Thêm huyện/quận không thành công");
   }
 }
 
@@ -35,10 +35,10 @@ function* deleteDistrict(action) {
   try {
     const response = yield call(districtApi.deleteById, action.payload);
     yield put({ type: DISTRICTS.DELETE_SUCCESS, payload: action.payload });
-    toast.success("Xóa huyện thành công");
+    toast.success("Xóa huyện/quận thành công");
   } catch (error) {
     yield put({ type: DISTRICTS.DELETE_ERROR, payload: error });
-    toast.error("Xóa huyện không thành công");
+    toast.error("Xóa huyện/quận không thành công");
   }
 }
 
@@ -47,10 +47,10 @@ function* updateDistrict(action) {
     const response = yield call(districtApi.update, action.payload);
     yield put({ type: DISTRICTS.UPDATE_SUCCESS, payload: response.data });
     yield put({ type: DISTRICTS.GET_ALL });
-    toast.success("Sửa huyện thành công");
+    toast.success("Sửa huyện/quận thành công");
   } catch (error) {
     yield put({ type: DISTRICTS.UPDATE_ERROR, payload: error });
-    toast.error("Sửa huyện không thành công");
+    toast.error("Sửa huyện/quận không thành công");
   }
 }
 

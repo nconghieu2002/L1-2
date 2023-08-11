@@ -1,109 +1,109 @@
-import { DISTRICTS } from "../actions/DistrictActions";
+import { EMPLOYEES } from "../actions/EmployeeActions";
 
 const initialState = {
-  districts: [],
+  employees: [],
   loading: false,
   error: null,
 };
 
-function districtReducer(state = initialState, action) {
+function employeeReducer(state = initialState, action) {
   switch (action.type) {
-    // Get DISTRICTS
-    case DISTRICTS.GET_ALL:
+    // Get EMPLOYEES
+    case EMPLOYEES.GET_ALL:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.GET_ALL_SUCCESS:
+    case EMPLOYEES.GET_ALL_SUCCESS:
       return {
         ...state,
-        districts: action.payload.data,
+        employees: action.payload.data,
         loading: false,
       };
-    case DISTRICTS.GET_ALL_ERROR:
+    case EMPLOYEES.GET_ALL_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    // Create district
-    case DISTRICTS.CREATE:
+    // Create employee
+    case EMPLOYEES.CREATE:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.CREATE_SUCCESS:
+    case EMPLOYEES.CREATE_SUCCESS:
       return {
         ...state,
-        districts: [...state.districts, action.payload.data],
+        employees: [...state.employees, action.payload.data],
         loading: false,
       };
-    case DISTRICTS.CREATE_ERROR:
+    case EMPLOYEES.CREATE_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    //Delete district
-    case DISTRICTS.DELETE:
+    //Delete employee
+    case EMPLOYEES.DELETE:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.DELETE_SUCCESS:
+    case EMPLOYEES.DELETE_SUCCESS:
       return {
         ...state,
-        districts: state.districts.filter((item) => item.id !== action.payload),
+        employees: state.employees.filter((item) => item.id !== action.payload),
         loading: false,
       };
-    case DISTRICTS.DELETE_ERROR:
+    case EMPLOYEES.DELETE_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    //Update district
-    case DISTRICTS.UPDATE:
+    //Update employee
+    case EMPLOYEES.UPDATE:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.UPDATE_SUCCESS:
+    case EMPLOYEES.UPDATE_SUCCESS:
       return {
         ...state,
-        districts: state.districts.map((item) =>
+        employees: state.employees.map((item) =>
           item.id === action.payload.id ? action.payload : item
         ),
         loading: false,
       };
-    case DISTRICTS.UPDATE_ERROR:
+    case EMPLOYEES.UPDATE_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    //Search district
-    case DISTRICTS.SEARCH:
+    //Search employee
+    case EMPLOYEES.SEARCH:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.SEARCH_SUCCESS:
+    case EMPLOYEES.SEARCH_SUCCESS:
       return {
         ...state,
-        districts: action.payload.data.content,
+        employees: action.payload.data.content,
         loading: false,
       };
-    case DISTRICTS.SEARCH_ERROR:
+    case EMPLOYEES.SEARCH_ERROR:
       return {
         ...state,
         loading: false,
@@ -115,4 +115,4 @@ function districtReducer(state = initialState, action) {
   }
 }
 
-export default districtReducer;
+export default employeeReducer;
