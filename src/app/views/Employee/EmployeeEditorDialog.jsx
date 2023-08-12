@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Draggable from "react-draggable";
 import Paper from "@material-ui/core/Paper";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Dialog,
   Button,
@@ -37,10 +37,11 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
   const formRef = useRef(null);
   const dispatch = useDispatch();
 
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
   const [employee, setEmployee] = useState(null);
+
+  const { provinces, districts, wards } = useSelector(
+    (state) => state.employee
+  );
 
   useEffect(() => {
     if (updateEmployee) {
@@ -48,13 +49,34 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
     }
   }, [updateEmployee]);
 
+  useEffect(() => {
+    dispatch(employeeActions.getProvinces());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(employeeActions.getDistricts(employee?.provinceId));
+  }, [dispatch, employee?.provinceId]);
+
+  useEffect(() => {
+    dispatch(employeeActions.getWards(employee?.districtId));
+  }, [dispatch, employee?.districtId]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setEmployee((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (name === "provinceId") {
+      setEmployee((prevState) => ({
+        ...prevState,
+        [name]: value,
+        districtId: "",
+        wardsId: "",
+      }));
+    } else {
+      setEmployee((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = () => {
@@ -111,7 +133,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                 onChange={handleChange}
                 type="text"
                 name="code"
-                value={employee.code || ""}
+                value={employee?.code || ""}
                 validators={["required", "matchRegexp:^.{6,10}$"]}
                 errorMessages={[
                   t("general.errorMessages_required"),
@@ -133,7 +155,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                 onChange={handleChange}
                 type="text"
                 name="name"
-                value={employee.name || ""}
+                value={employee?.name || ""}
                 validators={["required"]}
                 errorMessages={[t("general.errorMessages_required")]}
                 variant="outlined"
@@ -152,7 +174,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                 onChange={handleChange}
                 type="text"
                 name="age"
-                value={employee.age || ""}
+                value={employee?.age || ""}
                 validators={["required", "matchRegexp:^\\d+$"]}
                 errorMessages={[
                   t("general.errorMessages_required"),
@@ -174,7 +196,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                 onChange={handleChange}
                 type="text"
                 name="phone"
-                value={employee.phone || ""}
+                value={employee?.phone || ""}
                 validators={["required", "matchRegexp:^\\d{10}$"]}
                 errorMessages={[
                   t("general.errorMessages_required"),
@@ -197,7 +219,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                 placeholder="example@gmail.com"
                 type="email"
                 name="email"
-                value={employee.email || ""}
+                value={employee?.email || ""}
                 validators={["required", "isEmail"]}
                 errorMessages={[
                   t("general.errorMessages_required"),
@@ -223,7 +245,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                   id="province-select"
                   onChange={handleChange}
                   name="provinceId"
-                  value={employee.provinceId || ""}
+                  value={employee?.provinceId || ""}
                 >
                   {provinces.map((province) => (
                     <MenuItem key={province.id} value={province.id}>
@@ -247,7 +269,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                   id="district-select"
                   onChange={handleChange}
                   name="districtId"
-                  value={employee.districtId || ""}
+                  value={employee?.districtId || ""}
                 >
                   {districts.map((district) => (
                     <MenuItem key={district.id} value={district.id}>
@@ -271,7 +293,7 @@ const EmployeeEditorDialog = ({ open, close, updateEmployee, isUpdating }) => {
                   id="ward-select"
                   onChange={handleChange}
                   name="wardsId"
-                  value={employee.wardsId || ""}
+                  value={employee?.wardsId || ""}
                 >
                   {wards.map((ward) => (
                     <MenuItem key={ward.id} value={ward.id}>

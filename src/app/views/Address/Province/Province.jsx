@@ -29,15 +29,6 @@ function Province() {
   const [updateProvince, setUpdateProvince] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-
-  useEffect(() => {
-    dispatch(provinceActions.getAll());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(provinceActions.search({ keyword: searchInputValue }));
-  }, [dispatch, searchInputValue]);
-
   const columns = [
     {
       title: t("Action"),
@@ -70,6 +61,14 @@ function Province() {
       width: "5%",
     },
   ];
+
+  useEffect(() => {
+    dispatch(provinceActions.getAll());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(provinceActions.search({ keyword: searchInputValue }));
+  }, [dispatch, searchInputValue]);
 
   const handleCreateProvince = () => {
     setUpdateProvince({});
@@ -173,11 +172,11 @@ function Province() {
 
       {openDialogDelete && (
         <ConfirmationDialog
-          title={"Xóa tỉnh"}
+          title={"Xóa tỉnh/thành phố"}
           open={openDialogDelete}
           onYesClick={confirmDelete}
           onConfirmDialogClose={handleDialogCLose}
-          text={"Bạn có đồng ý xóa tỉnh này không"}
+          text={"Bạn có đồng ý xóa tỉnh/thành phố này không"}
           Yes="Đồng ý"
           No="Không"
         />

@@ -29,15 +29,6 @@ function Ward() {
   const [updateWard, setUpdateWard] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-
-  useEffect(() => {
-    dispatch(wardActions.getAll());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(wardActions.search({ keyword: searchInputValue }));
-  }, [dispatch, searchInputValue]);
-
   const columns = [
     {
       title: t("Action"),
@@ -70,6 +61,14 @@ function Ward() {
       width: "5%",
     },
   ];
+
+  useEffect(() => {
+    dispatch(wardActions.getAll());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(wardActions.search({ keyword: searchInputValue }));
+  }, [dispatch, searchInputValue]);
 
   const handleCreateWard = () => {
     setUpdateWard({});
@@ -173,11 +172,11 @@ function Ward() {
 
       {openDialogDelete && (
         <ConfirmationDialog
-          title={"Xóa huyện"}
+          title={"Xóa xã/phường"}
           open={openDialogDelete}
           onYesClick={confirmDelete}
           onConfirmDialogClose={handleDialogCLose}
-          text={"Bạn có đồng ý xóa huyện này không"}
+          text={"Bạn có đồng ý xóa xã/phường này không"}
           Yes="Đồng ý"
           No="Không"
         />

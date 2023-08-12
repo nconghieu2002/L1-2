@@ -8,7 +8,7 @@ import { PROVINCES } from "../actions/ProvinceActions";
 toast.configure({
   autoClose: 1000,
   draggable: false,
-  limit: 3,
+  limit: 1,
 });
 
 function* getProvinces() {

@@ -8,32 +8,36 @@ const initialState = {
 
 function provinceReducer(state = initialState, action) {
   switch (action.type) {
-    // Get provinces
+    //request
     case PROVINCES.GET_ALL:
+    case PROVINCES.CREATE:
+    case PROVINCES.DELETE:
+    case PROVINCES.UPDATE:
+    case PROVINCES.SEARCH:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case PROVINCES.GET_ALL_SUCCESS:
-      return {
-        ...state,
-        provinces: action.payload.data,
-        loading: false,
-      };
+
+    //error
     case PROVINCES.GET_ALL_ERROR:
+    case PROVINCES.CREATE_ERROR:
+    case PROVINCES.DELETE_ERROR:
+    case PROVINCES.UPDATE_ERROR:
+    case PROVINCES.SEARCH_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    // Create province
-    case PROVINCES.CREATE:
+    //success
+    case PROVINCES.GET_ALL_SUCCESS:
       return {
         ...state,
-        loading: true,
-        error: null,
+        provinces: action.payload.data,
+        loading: false,
       };
     case PROVINCES.CREATE_SUCCESS:
       return {
@@ -41,39 +45,11 @@ function provinceReducer(state = initialState, action) {
         provinces: [...state.provinces, action.payload.data],
         loading: false,
       };
-    case PROVINCES.CREATE_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    //Delete province
-    case PROVINCES.DELETE:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
     case PROVINCES.DELETE_SUCCESS:
       return {
         ...state,
         provinces: state.provinces.filter((item) => item.id !== action.payload),
         loading: false,
-      };
-    case PROVINCES.DELETE_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    //Update province
-    case PROVINCES.UPDATE:
-      return {
-        ...state,
-        loading: true,
-        error: null,
       };
     case PROVINCES.UPDATE_SUCCESS:
       return {
@@ -83,31 +59,11 @@ function provinceReducer(state = initialState, action) {
         ),
         loading: false,
       };
-    case PROVINCES.UPDATE_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    //Search province
-    case PROVINCES.SEARCH:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
     case PROVINCES.SEARCH_SUCCESS:
       return {
         ...state,
         provinces: action.payload.data.content,
         loading: false,
-      };
-    case PROVINCES.SEARCH_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
       };
 
     default:

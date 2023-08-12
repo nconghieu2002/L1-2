@@ -29,15 +29,6 @@ function District() {
   const [updateDistrict, setUpdateDistrict] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
-
-  useEffect(() => {
-    dispatch(districtActions.getAll());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(districtActions.search({ keyword: searchInputValue }));
-  }, [dispatch, searchInputValue]);
-
   const columns = [
     {
       title: t("Action"),
@@ -70,6 +61,14 @@ function District() {
       width: "5%",
     },
   ];
+
+  useEffect(() => {
+    dispatch(districtActions.getAll());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(districtActions.search({ keyword: searchInputValue }));
+  }, [dispatch, searchInputValue]);
 
   const handleCreateDistrict = () => {
     setUpdateDistrict({});
@@ -173,11 +172,11 @@ function District() {
 
       {openDialogDelete && (
         <ConfirmationDialog
-          title={"Xóa huyện"}
+          title={"Xóa huyện/quận"}
           open={openDialogDelete}
           onYesClick={confirmDelete}
           onConfirmDialogClose={handleDialogCLose}
-          text={"Bạn có đồng ý xóa huyện này không"}
+          text={"Bạn có đồng ý xóa huyện/quận này không"}
           Yes="Đồng ý"
           No="Không"
         />

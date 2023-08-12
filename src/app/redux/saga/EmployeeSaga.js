@@ -8,7 +8,7 @@ import { EMPLOYEES } from "../actions/EmployeeActions";
 toast.configure({
   autoClose: 1000,
   draggable: false,
-  limit: 3,
+  limit: 1,
 });
 
 function* getEmployees() {
@@ -17,6 +17,45 @@ function* getEmployees() {
     yield put({ type: EMPLOYEES.GET_ALL_SUCCESS, payload: response.data });
   } catch (error) {
     yield put({ type: EMPLOYEES.GET_ALL_ERROR, payload: error });
+  }
+}
+
+function* getProvinces() {
+  try {
+    const response = yield call(employeeApi.getProvinces);
+    yield put({
+      type: EMPLOYEES.GET_PROVINCES_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    yield put({ type: EMPLOYEES.GET_PROVINCES_ERROR, payload: error });
+  }
+}
+
+function* getDistricts(action) {
+  try {
+    const response = yield call(
+      employeeApi.getDistrictsByProvince,
+      action.payload
+    );
+    yield put({
+      type: EMPLOYEES.GET_DISTRICTS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    yield put({ type: EMPLOYEES.GET_DISTRICTS_ERROR, payload: error });
+  }
+}
+
+function* getWards(action) {
+  try {
+    const response = yield call(employeeApi.getWardsByDistrict, action.payload);
+    yield put({
+      type: EMPLOYEES.GET_WARDS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    yield put({ type: EMPLOYEES.GET_WARDS_ERROR, payload: error });
   }
 }
 
@@ -65,6 +104,9 @@ function* searchEmployee(action) {
 
 export default function* EMPLOYEESaga() {
   yield takeEvery(EMPLOYEES.GET_ALL, getEmployees);
+  yield takeEvery(EMPLOYEES.GET_PROVINCES, getProvinces);
+  yield takeEvery(EMPLOYEES.GET_DISTRICTS, getDistricts);
+  yield takeEvery(EMPLOYEES.GET_WARDS, getWards);
   yield takeEvery(EMPLOYEES.CREATE, createEmployee);
   yield takeEvery(EMPLOYEES.DELETE, deleteEmployee);
   yield takeEvery(EMPLOYEES.UPDATE, updateEmployee);

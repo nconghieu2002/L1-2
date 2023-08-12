@@ -8,7 +8,7 @@ import { DISTRICTS } from "../actions/DistrictActions";
 toast.configure({
   autoClose: 1000,
   draggable: false,
-  limit: 3,
+  limit: 1,
 });
 
 function* getDistricts() {

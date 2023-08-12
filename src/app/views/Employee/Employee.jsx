@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 const Employee = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
   const { employees } = useSelector((state) => state.employee);
 
   const [openDialogEmployee, setOpenDialogEmployee] = useState(false);
@@ -63,7 +64,7 @@ const Employee = () => {
       width: "5%",
     },
     {
-      title: t("staff.birthDate"),
+      title: t("Tuổi"),
       field: "age",
       align: "left",
       width: "5%",
@@ -224,11 +225,11 @@ const Employee = () => {
 
       {openDialogDelete && (
         <ConfirmationDialog
-          title={"Xóa tỉnh"}
+          title={"Xóa nhân viên"}
           open={openDialogDelete}
           onYesClick={confirmDelete}
           onConfirmDialogClose={handleDialogCLose}
-          text={"Bạn có đồng ý xóa tỉnh này không"}
+          text={"Bạn có đồng ý xóa nhân viên này không"}
           Yes="Đồng ý"
           No="Không"
         />

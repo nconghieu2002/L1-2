@@ -8,32 +8,36 @@ const initialState = {
 
 function districtReducer(state = initialState, action) {
   switch (action.type) {
-    // Get DISTRICTS
+    //request
     case DISTRICTS.GET_ALL:
+    case DISTRICTS.CREATE:
+    case DISTRICTS.DELETE:
+    case DISTRICTS.UPDATE:
+    case DISTRICTS.SEARCH:
       return {
         ...state,
         loading: true,
         error: null,
       };
-    case DISTRICTS.GET_ALL_SUCCESS:
-      return {
-        ...state,
-        districts: action.payload.data,
-        loading: false,
-      };
+
+    //error
     case DISTRICTS.GET_ALL_ERROR:
+    case DISTRICTS.CREATE_ERROR:
+    case DISTRICTS.DELETE_ERROR:
+    case DISTRICTS.UPDATE_ERROR:
+    case DISTRICTS.SEARCH_ERROR:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    // Create district
-    case DISTRICTS.CREATE:
+    //success
+    case DISTRICTS.GET_ALL_SUCCESS:
       return {
         ...state,
-        loading: true,
-        error: null,
+        districts: action.payload.data,
+        loading: false,
       };
     case DISTRICTS.CREATE_SUCCESS:
       return {
@@ -41,39 +45,11 @@ function districtReducer(state = initialState, action) {
         districts: [...state.districts, action.payload.data],
         loading: false,
       };
-    case DISTRICTS.CREATE_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    //Delete district
-    case DISTRICTS.DELETE:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
     case DISTRICTS.DELETE_SUCCESS:
       return {
         ...state,
         districts: state.districts.filter((item) => item.id !== action.payload),
         loading: false,
-      };
-    case DISTRICTS.DELETE_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    //Update district
-    case DISTRICTS.UPDATE:
-      return {
-        ...state,
-        loading: true,
-        error: null,
       };
     case DISTRICTS.UPDATE_SUCCESS:
       return {
@@ -83,31 +59,11 @@ function districtReducer(state = initialState, action) {
         ),
         loading: false,
       };
-    case DISTRICTS.UPDATE_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-
-    //Search district
-    case DISTRICTS.SEARCH:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
     case DISTRICTS.SEARCH_SUCCESS:
       return {
         ...state,
         districts: action.payload.data.content,
         loading: false,
-      };
-    case DISTRICTS.SEARCH_ERROR:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
       };
 
     default:

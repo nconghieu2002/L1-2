@@ -107,7 +107,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
                   }
                   type="text"
                   name="name"
-                  value={province.name || ""}
+                  value={province?.name || ""}
                   onChange={handleChange}
                   validators={["required"]}
                   errorMessages={[t("general.errorMessages_required")]}
@@ -126,7 +126,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
                   }
                   type="text"
                   name="code"
-                  value={province.code || ""}
+                  value={province?.code || ""}
                   onChange={handleChange}
                   validators={["required"]}
                   errorMessages={[t("general.errorMessages_required")]}
@@ -145,7 +145,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
                   }
                   type="text"
                   name="area"
-                  value={province.area || ""}
+                  value={province?.area || ""}
                   onChange={handleChange}
                   validators={["required", "matchRegexp:^\\d+$"]}
                   errorMessages={[
