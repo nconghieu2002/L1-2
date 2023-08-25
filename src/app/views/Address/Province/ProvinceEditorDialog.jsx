@@ -28,7 +28,7 @@ function PaperComponent(props) {
   );
 }
 
-const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
+const ProvinceEditorDialog = ({ open, close, updateProvince }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const dispatch = useDispatch();
@@ -50,7 +50,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
   };
 
   const handleSubmit = () => {
-    if (isUpdating) {
+    if (updateProvince.id) {
       dispatch(provinceActions.update(province));
     } else {
       dispatch(provinceActions.create(province));
@@ -67,7 +67,7 @@ const ProvinceEditorDialog = ({ open, close, updateProvince, isUpdating }) => {
         fullWidth={true}
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          {isUpdating ? (
+          {updateProvince.id ? (
             <span className="mb-20 styleColor">
               {t("Chỉnh sửa tỉnh/thành phố")}
             </span>

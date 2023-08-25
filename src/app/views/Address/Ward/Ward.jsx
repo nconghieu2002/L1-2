@@ -27,11 +27,10 @@ function Ward() {
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [updateWard, setUpdateWard] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const columns = [
     {
-      title: t("Action"),
+      title: t("Thao tác"),
       field: "custom",
       align: "center",
       width: "5%",
@@ -72,7 +71,6 @@ function Ward() {
 
   const handleCreateWard = () => {
     setUpdateWard({});
-    setIsUpdating(false);
     setOpenDialogWard(true);
   };
 
@@ -86,7 +84,6 @@ function Ward() {
   };
 
   const confirmDelete = () => {
-    console.log(deleteId);
     dispatch(wardActions.delete(deleteId));
     setOpenDialogDelete(false);
   };
@@ -97,7 +94,6 @@ function Ward() {
 
   const handleUpdateWard = (data) => {
     setUpdateWard(data);
-    setIsUpdating(true);
     setOpenDialogWard(true);
   };
 
@@ -105,7 +101,7 @@ function Ward() {
     <div>
       <Grid>
         <Grid container spacing={3}>
-          <Grid item lg={7} md={7} sm={12} xs={12}>
+          <Grid item lg={5} md={5} sm={12} xs={12}>
             <Button
               onClick={handleCreateWard}
               className="mb-16 mr-16"
@@ -115,7 +111,7 @@ function Ward() {
               {t("Add")}
             </Button>
           </Grid>
-          <Grid item lg={5} md={5} sm={12} xs={12}>
+          <Grid item lg={7} md={7} sm={12} xs={12}>
             <Input
               label={t("EnterSearch")}
               type="text"
@@ -187,7 +183,6 @@ function Ward() {
           open={openDialogWard}
           close={handleCloseDialogWard}
           updateWard={updateWard}
-          isUpdating={isUpdating}
         />
       )}
     </div>

@@ -27,11 +27,10 @@ function Province() {
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [updateProvince, setUpdateProvince] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const columns = [
     {
-      title: t("Action"),
+      title: t("Thao tác"),
       field: "custom",
       align: "center",
       width: "5%",
@@ -72,7 +71,6 @@ function Province() {
 
   const handleCreateProvince = () => {
     setUpdateProvince({});
-    setIsUpdating(false);
     setOpenDialogProvince(true);
   };
 
@@ -86,7 +84,6 @@ function Province() {
   };
 
   const confirmDelete = () => {
-    console.log(deleteId);
     dispatch(provinceActions.delete(deleteId));
     setOpenDialogDelete(false);
   };
@@ -97,7 +94,6 @@ function Province() {
 
   const handleUpdateProvince = (data) => {
     setUpdateProvince(data);
-    setIsUpdating(true);
     setOpenDialogProvince(true);
   };
 
@@ -105,7 +101,7 @@ function Province() {
     <div>
       <Grid>
         <Grid container spacing={3}>
-          <Grid item lg={7} md={7} sm={12} xs={12}>
+          <Grid item lg={5} md={5} sm={12} xs={12}>
             <Button
               onClick={handleCreateProvince}
               className="mb-16 mr-16"
@@ -115,7 +111,7 @@ function Province() {
               {t("Add")}
             </Button>
           </Grid>
-          <Grid item lg={5} md={5} sm={12} xs={12}>
+          <Grid item lg={7} md={7} sm={12} xs={12}>
             <Input
               label={t("EnterSearch")}
               type="text"
@@ -187,7 +183,6 @@ function Province() {
           open={openDialogProvince}
           close={handleCloseDialogProvince}
           updateProvince={updateProvince}
-          isUpdating={isUpdating}
         />
       )}
     </div>

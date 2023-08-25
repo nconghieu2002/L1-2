@@ -32,7 +32,7 @@ function PaperComponent(props) {
   );
 }
 
-const WardEditorDialog = ({ open, close, updateWard, isUpdating }) => {
+const WardEditorDialog = ({ open, close, updateWard }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const dispatch = useDispatch();
@@ -55,7 +55,6 @@ const WardEditorDialog = ({ open, close, updateWard, isUpdating }) => {
         ...ward,
         districtDto: { id: value },
       });
-      console.log(ward);
     } else {
       setWard({
         ...ward,
@@ -65,13 +64,12 @@ const WardEditorDialog = ({ open, close, updateWard, isUpdating }) => {
   };
 
   const handleSubmit = () => {
-    if (isUpdating) {
+    if (updateWard.id) {
       dispatch(wardActions.update(ward));
     } else {
       dispatch(wardActions.create(ward));
     }
     close();
-    console.log(ward);
   };
 
   return (
@@ -83,7 +81,7 @@ const WardEditorDialog = ({ open, close, updateWard, isUpdating }) => {
         fullWidth={true}
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          {isUpdating ? (
+          {updateWard.id ? (
             <span className="mb-20 styleColor">{t("Chỉnh sửa xã/phường")}</span>
           ) : (
             <span className="mb-20 styleColor">{t("Thêm mới xã/phường")}</span>

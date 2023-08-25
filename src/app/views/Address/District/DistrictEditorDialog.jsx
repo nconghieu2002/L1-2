@@ -32,7 +32,7 @@ function PaperComponent(props) {
   );
 }
 
-const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
+const DistrictEditorDialog = ({ open, close, updateDistrict }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const dispatch = useDispatch();
@@ -55,25 +55,21 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
         ...district,
         provinceDto: { id: value },
       });
-      console.log(district);
     } else {
       setDistrict({
         ...district,
         [name]: value,
       });
     }
-
-    console.log(district);
   };
 
   const handleSubmit = () => {
-    if (isUpdating) {
+    if (updateDistrict.id) {
       dispatch(districtActions.update(district));
     } else {
       dispatch(districtActions.create(district));
     }
     close();
-    console.log(district);
   };
 
   return (
@@ -85,7 +81,7 @@ const DistrictEditorDialog = ({ open, close, updateDistrict, isUpdating }) => {
         fullWidth={true}
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          {isUpdating ? (
+          {updateDistrict.id ? (
             <span className="mb-20 styleColor">
               {t("Chỉnh sửa huyện/quận")}
             </span>

@@ -28,13 +28,12 @@ const Employee = () => {
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [updateEmployee, setUpdateEmployee] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const columns = [
     {
-      title: t("Action"),
+      title: t("Thao tác"),
       field: "custom",
       align: "center",
       width: "4%",
@@ -102,7 +101,6 @@ const Employee = () => {
 
   const handleCreateEmployee = () => {
     setUpdateEmployee({});
-    setIsUpdating(false);
     setOpenDialogEmployee(true);
   };
 
@@ -116,7 +114,6 @@ const Employee = () => {
   };
 
   const confirmDelete = () => {
-    console.log(deleteId);
     dispatch(employeeActions.delete(deleteId));
     setOpenDialogDelete(false);
   };
@@ -127,7 +124,6 @@ const Employee = () => {
 
   const handleUpdateEmployee = (data) => {
     setUpdateEmployee(data);
-    setIsUpdating(true);
     setOpenDialogEmployee(true);
   };
 
@@ -142,7 +138,7 @@ const Employee = () => {
         />
       </div>
       <Grid container spacing={3}>
-        <Grid item lg={7} md={7} sm={12} xs={12}>
+        <Grid item lg={6} md={6} sm={12} xs={12}>
           <Button
             className="mb-16 mr-16"
             variant="contained"
@@ -155,7 +151,7 @@ const Employee = () => {
             {t("general.exportToExcel")}
           </Button>
         </Grid>
-        <Grid item lg={5} md={5} sm={12} xs={12}>
+        <Grid item lg={6} md={6} sm={12} xs={12}>
           <Input
             label={t("EnterSearch")}
             type="text"
@@ -240,7 +236,6 @@ const Employee = () => {
           open={openDialogEmployee}
           close={handleCloseDialogEmployee}
           updateEmployee={updateEmployee}
-          isUpdating={isUpdating}
         />
       )}
     </div>

@@ -27,11 +27,10 @@ function District() {
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [updateDistrict, setUpdateDistrict] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState("");
   const columns = [
     {
-      title: t("Action"),
+      title: t("Thao tác"),
       field: "custom",
       align: "center",
       width: "5%",
@@ -72,7 +71,6 @@ function District() {
 
   const handleCreateDistrict = () => {
     setUpdateDistrict({});
-    setIsUpdating(false);
     setOpenDialogDistrict(true);
   };
 
@@ -86,7 +84,6 @@ function District() {
   };
 
   const confirmDelete = () => {
-    console.log(deleteId);
     dispatch(districtActions.delete(deleteId));
     setOpenDialogDelete(false);
   };
@@ -97,7 +94,6 @@ function District() {
 
   const handleUpdateDistrict = (data) => {
     setUpdateDistrict(data);
-    setIsUpdating(true);
     setOpenDialogDistrict(true);
   };
 
@@ -105,7 +101,7 @@ function District() {
     <div>
       <Grid>
         <Grid container spacing={3}>
-          <Grid item lg={7} md={7} sm={12} xs={12}>
+          <Grid item lg={5} md={5} sm={12} xs={12}>
             <Button
               onClick={handleCreateDistrict}
               className="mb-16 mr-16"
@@ -115,7 +111,7 @@ function District() {
               {t("Add")}
             </Button>
           </Grid>
-          <Grid item lg={5} md={5} sm={12} xs={12}>
+          <Grid item lg={7} md={7} sm={12} xs={12}>
             <Input
               label={t("EnterSearch")}
               type="text"
@@ -187,7 +183,6 @@ function District() {
           open={openDialogDistrict}
           close={handleCloseDialogDistrict}
           updateDistrict={updateDistrict}
-          isUpdating={isUpdating}
         />
       )}
     </div>
